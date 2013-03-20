@@ -28,6 +28,5 @@ define(['networkemitter', 'farmer'], function (nemitter, Farmer) {
             nemitter.emit(event.type, entityFactory({'type': 'player', 'x': 10, 'y': 10}));
         });
     };
-
     return Network;
 });
