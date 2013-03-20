@@ -22,7 +22,7 @@ define(function () {
         this.id = 0;
     };
 
-    Farmer.DIRECTION = DIRECTION;
+    Farmer.prototype.DIRECTION = Farmer.DIRECTION = DIRECTION;
 
     Farmer.prototype.init = function (img, x, y, r) {
         this.img = img;
