@@ -14,7 +14,7 @@ define(function () {
     Collection.prototype.add = function (entity) {
         if (this.entities.indexOf(entity) === -1) {
             this.entities.push(entity);
-            if (entity.collection !== null) {
+            if (entity.collection != null) {
                 entity.collection.remove(entity);
             }
             entity.collection = this;
