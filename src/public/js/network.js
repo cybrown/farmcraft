@@ -9,7 +9,7 @@ define(['networkemitter', 'farmer'], function (nemitter, Farmer) {
     var entityFactory = function (hash) {
         var res;
         switch (hash.type) {
-        case 'player':
+        case 'farmer':
             res = new Farmer();
             var img = new Image();
             img.src = 'img/frog.png';
@@ -25,7 +25,7 @@ define(['networkemitter', 'farmer'], function (nemitter, Farmer) {
         this.socket = io.connect('/' + channel);
         this.socket.on('message', function (event) {
             console.log(event);
-            nemitter.emit(event.type, entityFactory({'type': 'player', 'x': 10, 'y': 10}));
+            nemitter.emit(event.type, entityFactory(event.data));
         });
     };
 

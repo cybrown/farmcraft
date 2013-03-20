@@ -21,6 +21,7 @@ require(['farmer', 'effects/rain', 'networkemitter', 'network'], function (Farme
             return farmer;
     };
 
+
     GOD.createEvent = function (eventType) {
         var resEvent;
         resEvent = new Rain();

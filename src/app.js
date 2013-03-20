@@ -7,7 +7,8 @@
     var express = require('express'),
         http = require('http'),
         app = express(),
-        fs = require('fs');
+        fs = require('fs'),
+        events = require('events');
 
 
     app.set('port', process.env.PORT || 3000);
@@ -43,13 +44,29 @@
     });
 
 
+
+    var emitter = new events.EventEmitter();
+    emitter.on('farmer.create', function () {
+        console.log('farmer created !');
+    });
+
+    var Collection = require('./collection');
+
+    var Farmer = function () {
+        this.x = 0;
+        this.y = 0;
+    };
+
+    var farmers = (new Collection()).init('farmer', Farmer, emitter);
+
     var io = require('socket.io').listen(server);
     io.on('connection', function (socket) {
         console.log('connection');
         setTimeout(function () {
-            socket.emit('message', {'type': 'player.add', 'data': {
-                'type': 'farmer'
-            }});
+            socket.emit('message', {
+                'type': 'farmer.add', 
+                'data': farmers.create()
+            });
         }, 1000);
     });
 }());

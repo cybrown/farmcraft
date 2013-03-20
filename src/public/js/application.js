@@ -66,13 +66,13 @@ define(
         };
 
         Application.prototype.initNetworkEvents = function () {
-            // PLAYER
-            nemitter.on('player.add', function (player) {
-                this.world.entities.add(player);
+            // FARMER
+            nemitter.on('farmer.add', function (farmer) {
+                this.world.entities.add(farmer);
             }.bind(this));
 
-            nemitter.on('player.remove', function (player) {
-                this.world.entities.remove(player);
+            nemitter.on('farmer.remove', function (farmer) {
+                this.world.entities.remove(farmer);
             }.bind(this));
 
             // CHUNK
