@@ -9,6 +9,7 @@ define(function () {
     Collection.prototype.init = function (name, emitter) {
         this.name = name;
         this.emitter = emitter;
+        return this;
     };
 
     Collection.prototype.add = function (entity) {
@@ -20,6 +21,7 @@ define(function () {
             entity.collection = this;
             this.emitter.emit(this.name + '.add', entity);
         }
+        return this;
     };
 
     Collection.prototype.remove = function (entity) {

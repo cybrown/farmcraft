@@ -56,6 +56,9 @@ define(
             }.bind(this));
             guiemitter.on('keyboard.down.down', function () {
                 console.log('start move player down');
+                if (this.player !== null) {
+                    this.player.y += 32;
+                }
             }.bind(this));
             guiemitter.on('keyboard.down.up', function () {
                 console.log('stop move player down');
@@ -112,6 +115,9 @@ define(
         Application.prototype.initGuiEvents = function () {
             // ENTITY
             guiemitter.on('entity.add', this.addDrawableToLayer('entities'));
+            guiemitter.on('entity.add', function (player) {
+                this.player = player;
+            }.bind(this));
             guiemitter.on('entity.remove', this.removeDrawableFromLayer('entities'));
 
             // EVENT

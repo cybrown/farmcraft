@@ -19,6 +19,7 @@ define(function () {
         this.frame = 0;
         this.img = null;
         this.lastanim = 0;
+        this.id = 0;
     };
 
     Farmer.DIRECTION = DIRECTION;

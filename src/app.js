@@ -47,7 +47,9 @@
     io.on('connection', function (socket) {
         console.log('connection');
         setTimeout(function () {
-            socket.emit('message', {'type': 'player.add', 'data': {}});
+            socket.emit('message', {'type': 'player.add', 'data': {
+                'type': 'farmer'
+            }});
         }, 1000);
     });
 }());
