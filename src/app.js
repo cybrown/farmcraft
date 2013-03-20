@@ -89,6 +89,13 @@
             });
         });
 
+        socket.on('notifychange', function (data) {
+            socket.broadcast.emit('message', {
+                'type': 'farmer.change',
+                'data': data
+            });
+        });
+
         socket.on('disconnect', function () {
             if (socket.session.hasOwnProperty('farmer')) {
                 farmers.remove(socket.session.farmer);

@@ -28,6 +28,16 @@ define(['networkemitter', 'farmer'], function (nemitter, Farmer) {
             console.log(event);
             nemitter.emit(event.type, entityFactory(event.data));
         });
+
+        this.socket.on('notifychange', function (data) {
+            console.log('CHANGE');
+            console.log(data);
+        });
     };
+
+    Network.prototype.notifychange = function (data) {
+        this.socket.emit('notifychange', data);
+    };
+
     return Network;
 });
