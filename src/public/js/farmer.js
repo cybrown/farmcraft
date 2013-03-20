@@ -20,6 +20,7 @@ define(function () {
         this.img = null;
         this.lastanim = 0;
         this.id = 0;
+        this.collection = null;
     };
 
     Farmer.prototype.DIRECTION = Farmer.DIRECTION = DIRECTION;
@@ -45,6 +46,9 @@ define(function () {
         case DIRECTION.right:
             this.x += 32;
             break;
+        }
+        if (this.collection) {
+            this.collection.notify(this);
         }
     };
 

@@ -31,5 +31,9 @@ define(function () {
         }
     };
 
+    Collection.prototype.notify = function (entity) {
+        this.emitter.emit(this.name + '.change', entity);
+    };
+
     return Collection;
 });

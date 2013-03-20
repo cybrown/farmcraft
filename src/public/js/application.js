@@ -156,6 +156,12 @@ define(
 
             // TILEMAP
             guiemitter.on('tilemap.set', this.addDrawableToLayer('tilemap'));
+
+
+            guiemitter.on('entity.change', function (entity) {
+                
+                console.log(entity);
+            });
         };
 
         Application.prototype.start = function () {
