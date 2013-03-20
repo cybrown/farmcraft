@@ -1,0 +1,7 @@
+extends parts/page
+
+block content
+    ul
+        each file in tests
+            li
+                a(href=file) #{file}
