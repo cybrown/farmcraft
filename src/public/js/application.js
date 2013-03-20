@@ -50,6 +50,9 @@ define(
             this.keyboard.enable();
             guiemitter.on('keyboard.up.down', function () {
                 console.log('start move player up');
+                if (this.player !== null) {
+                    this.player.y -= 16;
+                }
             }.bind(this));
             guiemitter.on('keyboard.up.up', function () {
                 console.log('stop move player up');
@@ -57,12 +60,31 @@ define(
             guiemitter.on('keyboard.down.down', function () {
                 console.log('start move player down');
                 if (this.player !== null) {
-                    this.player.y += 32;
+                    this.player.y += 16;
                 }
             }.bind(this));
             guiemitter.on('keyboard.down.up', function () {
                 console.log('stop move player down');
             }.bind(this));
+            guiemitter.on('keyboard.right.down', function () {
+                console.log('start move player right');
+                if (this.player !== null) {
+                    this.player.x += 16;
+                }
+            }.bind(this));
+            guiemitter.on('keyboard.right.up', function () {
+                console.log('stop move player right');
+            }.bind(this));
+            guiemitter.on('keyboard.left.down', function () {
+                console.log('start move player left');
+                if (this.player !== null) {
+                    this.player.x -= 16;
+                }
+            }.bind(this));
+            guiemitter.on('keyboard.left.up', function () {
+                console.log('stop move player left');
+            }.bind(this));
+
         };
 
         Application.prototype.initNetworkEvents = function () {
