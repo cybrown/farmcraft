@@ -51,7 +51,7 @@ define(
             guiemitter.on('keyboard.up.down', function () {
                 console.log('start move player up');
                 if (this.player !== null) {
-                    this.player.y -= 16;
+                    this.player.y -= 32;
                 }
             }.bind(this));
             guiemitter.on('keyboard.up.up', function () {
@@ -60,7 +60,7 @@ define(
             guiemitter.on('keyboard.down.down', function () {
                 console.log('start move player down');
                 if (this.player !== null) {
-                    this.player.y += 16;
+                    this.player.y += 32;
                 }
             }.bind(this));
             guiemitter.on('keyboard.down.up', function () {
@@ -69,7 +69,7 @@ define(
             guiemitter.on('keyboard.right.down', function () {
                 console.log('start move player right');
                 if (this.player !== null) {
-                    this.player.x += 16;
+                    this.player.x += 32;
                 }
             }.bind(this));
             guiemitter.on('keyboard.right.up', function () {
@@ -78,7 +78,7 @@ define(
             guiemitter.on('keyboard.left.down', function () {
                 console.log('start move player left');
                 if (this.player !== null) {
-                    this.player.x -= 16;
+                    this.player.x -= 32;
                 }
             }.bind(this));
             guiemitter.on('keyboard.left.up', function () {

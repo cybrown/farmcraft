@@ -13,23 +13,21 @@ define(function () {
     };
 
     Collection.prototype.add = function (entity) {
-        if (this.entities.indexOf(entity) === -1) {
-            this.entities.push(entity);
-            if (entity.collection != null) {
-                entity.collection.remove(entity);
-            }
-            entity.collection = this;
-            this.emitter.emit(this.name + '.add', entity);
-        }
+        this.entities[entity.id] = entity;
+        entity.collection = this;
+        this.emitter.emit(this.name + '.add', entity);
         return this;
     };
 
-    Collection.prototype.remove = function (entity) {
+    Collection.prototype.find = function (id) {
+        return this.entities[id];
+    };
+
+    Collection.prototype.remove = function (id) {
         var index = this.entities.indexOf(entity);
-        if (index !== -1) {
-            this.emitter.emit(this.name + '.remove', entity);
-            this.entities[index] = this.entities[this.entities.length - 1];
-            this.entities.pop();
+        if (this.entities.hasOwnProperty(id)) {
+            this.emitter.emit(this.name + '.remove', this.entities[entity]);
+            delete this.entities[entity.id];
         }
     };
 

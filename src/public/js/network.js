@@ -1,5 +1,6 @@
 /*global define, console, io*/
 define(['networkemitter', 'farmer'], function (nemitter, Farmer) {
+    'use strict';
 
     var Network = function () {
         this.socket = null;

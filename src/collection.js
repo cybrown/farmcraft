@@ -20,9 +20,14 @@
         var res = new this.type();
         res.id = this.autoinc;
         res.type = this.name;
+        this.entities[this.autoinc] = res;
         this.autoinc += 1;
         this.emitter.emit(this.name + '.create', res);
         return res;
+    };
+
+    Collection.prototype.findAll = function () {
+        return this.entities;
     };
 
     Collection.prototype.find = function (id) {
@@ -30,15 +35,15 @@
             return this.entities[id];
         }
         return null;
-    }
+    };
 
     Collection.prototype.remove = function (entity) {
         if (this.entities.hasOwnProperty(entity.id)) {
-        this.emitter.emit(this.name + '.remove', res);
+            this.emitter.emit(this.name + '.remove', entity);
             delete this.entities[entity.id];
         }
         return this;
-    }
+    };
 
     module.exports = Collection;
 
