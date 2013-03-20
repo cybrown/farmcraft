@@ -53,7 +53,7 @@ define(['graphics/layer', 'guiemitter', 'graphics/requestAnimationFrame'], funct
     }
 
     Drawer.prototype.render = function () {
-        this.defaultContext.clearRect(this.defaultContext.canvas.width, this.defaultContext.canvas.height);
+        this.defaultContext.clearRect(0, 0, this.defaultContext.canvas.width, this.defaultContext.canvas.height);
         for (var d in this.layers) {
             this.layers[d].render(this.defaultContext);
         }

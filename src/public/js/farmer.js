@@ -31,8 +31,8 @@ define(function () {
         this.faceDirection = r || DIRECTION.down;
     };
 
-    Farmer.prototype.move = function (direction) {
-        switch (direction) {
+    Farmer.prototype.move = function () {
+        switch (this.moveDirection) {
         case DIRECTION.up:
             this.y -= 32;
             break;
