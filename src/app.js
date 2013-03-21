@@ -60,7 +60,7 @@
 
     // Collections
     var farmers = (new Collection()).init('farmer', Farmer, emitter);
-    var events = (new Collection()).init('farmer', Event, emitter);
+    var events = (new Collection()).init('events', Event, emitter);
 
     // Create comminucation channel for this game
     var channel = require('socket.io').listen(server);
@@ -76,6 +76,13 @@
     emitter.on('farmer.remove', function (farmer) {
         channel.sockets.emit('message', {
             'type': 'farmer.remove', 
+            'data': farmer
+        });
+    });
+
+    emitter.on('farmer.change', function (farmer) {
+        channel.sockets.emit('message', {
+            'type': 'farmer.change',
             'data': farmer
         });
     });
@@ -100,13 +107,20 @@
             });
         }
 
-        
+
 
         socket.on('notifychange', function (data) {
+            console.log(data);
+            var f = farmers.find(data.id);
+            f.x = data.x;
+            f.y = data.y;
+            farmers.change(f);
+            /*
             socket.broadcast.emit('message', {
                 'type': 'farmer.change',
                 'data': data
             });
+*/
         });
 
         // The player has disconnected, remove listeners and remove his player from the game

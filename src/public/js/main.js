@@ -1,16 +1,16 @@
-/*global console: true, require: true */
-require(['application'], function (Application) {
-    var app = new Application();
-    app.init(document.getElementById('canvas'));
-    app.start();
-});
-
 // Global Object for Debug
 
 var GOD = {};
 GOD.ev = {};
 
-require(['farmer', 'effects/rain', 'networkemitter', 'network'], function (Farmer, Rain, nemitter, Network) {
+require(['application', 'farmer', 'effects/rain', 'networkemitter', 'network'], function (Application, Farmer, Rain, nemitter, Network) {
+
+    var app = new Application();
+    var net = (new Network()).init('');
+    app.init(document.getElementById('canvas'), net);
+    app.start();
+
+
     GOD.createPlayer = function () {
             var img = new Image();
             img.src = 'img/frog.png';
@@ -21,6 +21,7 @@ require(['farmer', 'effects/rain', 'networkemitter', 'network'], function (Farme
             return farmer;
     };
 
+    GOD.app = app;
 
     GOD.createEvent = function (eventType) {
         var resEvent;
@@ -45,5 +46,16 @@ require(['farmer', 'effects/rain', 'networkemitter', 'network'], function (Farme
         nemitter.emit('event.remove', evRain);
     };
 
-    var net = (new Network()).init('');
+    
+
+    GOD.ev.sendNotify = function () {
+        net.notifychange({
+            'id': app.player.id,
+            'x': 64,
+            //'x': app.player.x,
+            'y': 64
+            //'y': app.player.y
+        });
+    };
+
 });

@@ -23,6 +23,7 @@
         this.entities[this.autoinc] = res;
         this.autoinc += 1;
         this.emitter.emit(this.name + '.create', res);
+        console.log(res);
         return res;
     };
 
@@ -43,6 +44,10 @@
             delete this.entities[entity.id];
         }
         return this;
+    };
+
+    Collection.prototype.change = function (entity) {
+        this.emitter.emit(this.name + '.change', entity);
     };
 
     module.exports = Collection;

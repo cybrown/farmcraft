@@ -17,6 +17,7 @@ define(['networkemitter', 'farmer'], function (nemitter, Farmer) {
             res.init(img);
             break;
         }
+        res.id = hash.id;
         res.x = hash.x;
         res.y = hash.y;
         return res;
@@ -33,6 +34,7 @@ define(['networkemitter', 'farmer'], function (nemitter, Farmer) {
             console.log('CHANGE');
             console.log(data);
         });
+        return this;
     };
 
     Network.prototype.notifychange = function (data) {

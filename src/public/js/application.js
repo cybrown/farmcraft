@@ -19,9 +19,11 @@ define(
             this.world = null;
             this.player = null;
             this.keyboard = null;
+            this.net = null;
         };
 
-        Application.prototype.init = function (canvas) {
+        Application.prototype.init = function (canvas, net) {
+            this.net = net;
             this.initGraphics(canvas);
             this.initNetworkEvents();
             this.initGuiEvents();
@@ -51,9 +53,11 @@ define(
             guiemitter.on('keyboard.up.down', function () {
                 console.log('start move player up');
                 if (this.player !== null) {
-                    this.player.faceDirection = this.player.DIRECTION.up;
-                    this.player.moveDirection = this.player.DIRECTION.up;
-                    this.player.move();
+                    this.net.notifychange({
+                        'id': this.player.id,
+                        'x': this.player.x,
+                        'y': this.player.y - 32
+                    });
                 }
             }.bind(this));
             guiemitter.on('keyboard.up.up', function () {
@@ -62,9 +66,11 @@ define(
             guiemitter.on('keyboard.down.down', function () {
                 console.log('start move player down');
                 if (this.player !== null) {
-                    this.player.faceDirection = this.player.DIRECTION.down;
-                    this.player.moveDirection = this.player.DIRECTION.down;
-                    this.player.move();
+                    this.net.notifychange({
+                        'id': this.player.id,
+                        'x': this.player.x,
+                        'y': this.player.y + 32
+                    });
                 }
             }.bind(this));
             guiemitter.on('keyboard.down.up', function () {
@@ -73,9 +79,11 @@ define(
             guiemitter.on('keyboard.right.down', function () {
                 console.log('start move player right');
                 if (this.player !== null) {
-                    this.player.faceDirection = this.player.DIRECTION.right;
-                    this.player.moveDirection = this.player.DIRECTION.right;
-                    this.player.move();
+                    this.net.notifychange({
+                        'id': this.player.id,
+                        'x': this.player.x + 32,
+                        'y': this.player.y
+                    });
                 }
             }.bind(this));
             guiemitter.on('keyboard.right.up', function () {
@@ -84,9 +92,11 @@ define(
             guiemitter.on('keyboard.left.down', function () {
                 console.log('start move player left');
                 if (this.player !== null) {
-                    this.player.faceDirection = this.player.DIRECTION.left;
-                    this.player.moveDirection = this.player.DIRECTION.left;
-                    this.player.move();
+                    this.net.notifychange({
+                        'id': this.player.id,
+                        'x': this.player.x - 32,
+                        'y': this.player.y
+                    });
                 }
             }.bind(this));
             guiemitter.on('keyboard.left.up', function () {
@@ -103,6 +113,12 @@ define(
 
             nemitter.on('farmer.remove', function (farmer) {
                 this.world.entities.remove(farmer);
+            }.bind(this));
+
+            nemitter.on('farmer.change', function (farmer) {
+                var f = this.world.entities.find(farmer.id);
+                f.x = farmer.x;
+                f.y = farmer.y;
             }.bind(this));
 
             // CHUNK
