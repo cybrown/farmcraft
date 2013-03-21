@@ -62,9 +62,27 @@
     var farmers = (new Collection()).init('farmer', Farmer, emitter);
     var events = (new Collection()).init('farmer', Event, emitter);
 
+    // Create comminucation channel for this game
+    var channel = require('socket.io').listen(server);
 
-    var io = require('socket.io').listen(server);
-    io.on('connection', function (socket) {
+    // Listner for changes in the models and send them to the clients
+    emitter.on('farmer.create', function (farmer) {
+        channel.sockets.emit('message', {
+            'type': 'farmer.add', 
+            'data': farmer
+        });
+    });
+
+    emitter.on('farmer.remove', function (farmer) {
+        channel.sockets.emit('message', {
+            'type': 'farmer.remove', 
+            'data': farmer
+        });
+    });
+
+
+    // Listen and setup events for a new connection
+    channel.on('connection', function (socket) {
         socket.session = {};
         console.log('connection');
 
@@ -73,7 +91,7 @@
             socket.session.farmer = farmers.create();
         }, 1000);
 
-        // Send all farmers
+        // Send all farmers to the newly connected player
         var allFarmers = farmers.findAll();
         for (var f in allFarmers) {
             socket.emit('message', {
@@ -82,12 +100,7 @@
             });
         }
 
-        emitter.on('farmer.create', function (farmer) {
-            socket.emit('message', {
-                'type': 'farmer.add', 
-                'data': farmer
-            });
-        });
+        
 
         socket.on('notifychange', function (data) {
             socket.broadcast.emit('message', {
@@ -96,6 +109,7 @@
             });
         });
 
+        // The player has disconnected, remove listeners and remove his player from the game
         socket.on('disconnect', function () {
             if (socket.session.hasOwnProperty('farmer')) {
                 farmers.remove(socket.session.farmer);
@@ -105,10 +119,5 @@
     });
 
 
-    emitter.on('farmer.remove', function (farmer) {
-        io.sockets.emit('message', {
-            'type': 'farmer.remove', 
-            'data': farmer
-        });
-    });
+    
 }());
