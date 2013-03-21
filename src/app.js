@@ -66,7 +66,7 @@
     var channel = require('socket.io').listen(server);
 
     // Listner for changes in the models and send them to the clients
-    emitter.on('farmer.create', function (farmer) {
+    emitter.on('farmer.create', function (farmer) { // New farmer
         channel.sockets.emit('message', {
             'type': 'farmer.add', 
             'data': farmer
