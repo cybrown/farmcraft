@@ -54,13 +54,13 @@
     };
 
     var Collection = require('./collection');
-    
+
     // Entity emitter
     var emitter = new events.EventEmitter();
 
     // Collections
     var farmers = (new Collection()).init('farmer', Farmer, emitter);
-    var events = (new Collection()).init('events', Event, emitter);
+    var events = (new Collection()).init('farmer', Event, emitter);
 
     // Create comminucation channel for this game
     var channel = require('socket.io').listen(server);
@@ -76,13 +76,6 @@
     emitter.on('farmer.remove', function (farmer) {
         channel.sockets.emit('message', {
             'type': 'farmer.remove', 
-            'data': farmer
-        });
-    });
-
-    emitter.on('farmer.change', function (farmer) {
-        channel.sockets.emit('message', {
-            'type': 'farmer.change',
             'data': farmer
         });
     });
@@ -133,5 +126,5 @@
     });
 
 
-    
+
 }());
