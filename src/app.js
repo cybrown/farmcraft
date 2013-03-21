@@ -11,6 +11,7 @@
         events = require('events'),
         server = http.createServer(app);
 
+
     app.set('port', process.env.PORT || 3000);
     app.set('view engine', 'jade');
 
@@ -59,7 +60,7 @@
 
     // Collections
     var farmers = (new Collection()).init('farmer', Farmer, emitter);
-    var events = (new Collection()).init('farmer', Event, emitter);
+    var events = (new Collection()).init('events', Event, emitter);
 
     // Create comminucation channel for this game
     var channel = require('socket.io').listen(server);
