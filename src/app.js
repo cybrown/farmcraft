@@ -80,6 +80,11 @@
         });
     });
 
+    var modFarmer = require('./_testMongoose');
+    //console.log(modFarmer.modFarmer.pseudo);
+    //console.log(modFarmer.modFarmer.id);
+    //console.log(modFarmer.modFarmer.x);
+    //console.log(modFarmer.modFarmer.y);
 
     // Listen and setup events for a new connection
     channel.on('connection', function (socket) {

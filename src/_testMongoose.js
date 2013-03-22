@@ -12,20 +12,26 @@ mongoose.connect('mongodb://localhost/farmcraftdb', function(err) {
     if (err) { throw err; }
 });
 
-// Creation du schema
-var schema = new mongoose.Schema({
-    name : String
+// Creation du schema farmer
+var schFarmer = new mongoose.Schema({
+    pseudo : String,
+    x: Number,
+    y: Number
 });
 
-// Creation du model associé à ce schema
-var Test = mongoose.model('Test', schema);
+// Creation du model farmer
+var modFarmer = mongoose.model('Farmer', schFarmer);
 
-var t = new Test();
-t.name = "Alex";
+var f = new modFarmer();
+f.pseudo = "Alex";
+f.x = "100";
+f.y = "100";
 
-t.save(function (err) {
+exports.modFarmer = modFarmer;
+
+f.save(function (err) {
     if (err) { throw err; }
-    console.log("Hello " + t.name);
+    console.log("Hello " + f.pseudo + ",id : " + f.id + ", position x : " + f.x + ", position y : " + f.y);
     // On se déconnecte de MongoDB maintenant
     mongoose.connection.close();
 });
