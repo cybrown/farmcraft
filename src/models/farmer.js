@@ -7,17 +7,16 @@ var FarmerSchema = new mongoose.Schema({
     y: Number
 });
 
-var Farmer = mongoose.model('Farmer', FarmerSchema);
-
-FarmerSchema.static.create = function (hash) {
-    var result = new Farmer(hash);
+FarmerSchema.statics.create = function (hash) {
+    var result = new this(hash);
     emitter.emit('farmer.create', result);
     return result;
 };
 
 FarmerSchema.post('save', function (farmer) {
-    console.log('save');
     emitter.emit('farmer.change', farmer);
 });
+
+var Farmer = mongoose.model('Farmer', FarmerSchema);
 
 module.exports = Farmer;
