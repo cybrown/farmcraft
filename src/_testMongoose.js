@@ -22,16 +22,13 @@ var schFarmer = new mongoose.Schema({
 // Creation du model farmer
 var modFarmer = mongoose.model('Farmer', schFarmer);
 
-var f = new modFarmer();
-f.pseudo = "Alex";
-f.x = "100";
-f.y = "100";
+var f = new modFarmer({pseudo: "Alex", x: 100, y: 100});
 
-exports.modFarmer = modFarmer;
+module.exports = f;
 
 f.save(function (err) {
     if (err) { throw err; }
-    console.log("Hello " + f.pseudo + ",id : " + f.id + ", position x : " + f.x + ", position y : " + f.y);
+    //console.log("Hello " + f.pseudo + ",id : " + f.id + ", position x : " + f.x + ", position y : " + f.y);
     // On se déconnecte de MongoDB maintenant
     mongoose.connection.close();
 });

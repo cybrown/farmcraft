@@ -43,10 +43,7 @@
     });
 
     // Entities
-    var Farmer = function () {
-        this.x = 0;
-        this.y = 0;
-    };
+    var Farmer = require('./models/farmer');
 
     var Event = function () {
         this.x = 0;
@@ -56,11 +53,11 @@
     var Collection = require('./collection');
 
     // Entity emitter
-    var emitter = new events.EventEmitter();
+    var emitter = require('./globalEmitter');
 
     // Collections
     var farmers = (new Collection()).init('farmer', Farmer, emitter);
-    var events = (new Collection()).init('farmer', Event, emitter);
+    var events = (new Collection()).init('events', Event, emitter);
 
     // Create comminucation channel for this game
     var channel = require('socket.io').listen(server);
@@ -79,12 +76,6 @@
             'data': farmer
         });
     });
-
-    var modFarmer = require('./_testMongoose');
-    //console.log(modFarmer.modFarmer.pseudo);
-    //console.log(modFarmer.modFarmer.id);
-    //console.log(modFarmer.modFarmer.x);
-    //console.log(modFarmer.modFarmer.y);
 
     // Listen and setup events for a new connection
     channel.on('connection', function (socket) {
