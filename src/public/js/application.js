@@ -54,7 +54,7 @@ define(
                 console.log('start move player up');
                 if (this.player !== null) {
                     this.net.notifychange({
-                        'id': this.player.id,
+                        '_id': this.player._id,
                         'x': this.player.x,
                         'y': this.player.y - 32
                     });
@@ -67,7 +67,7 @@ define(
                 console.log('start move player down');
                 if (this.player !== null) {
                     this.net.notifychange({
-                        'id': this.player.id,
+                        '_id': this.player._id,
                         'x': this.player.x,
                         'y': this.player.y + 32
                     });
@@ -80,7 +80,7 @@ define(
                 console.log('start move player right');
                 if (this.player !== null) {
                     this.net.notifychange({
-                        'id': this.player.id,
+                        '_id': this.player._id,
                         'x': this.player.x + 32,
                         'y': this.player.y
                     });
@@ -93,7 +93,7 @@ define(
                 console.log('start move player left');
                 if (this.player !== null) {
                     this.net.notifychange({
-                        'id': this.player.id,
+                        '_id': this.player._id,
                         'x': this.player.x - 32,
                         'y': this.player.y
                     });
@@ -106,9 +106,21 @@ define(
         };
 
         Application.prototype.initNetworkEvents = function () {
+            // COMMAND
+            nemitter.on('command', function (command) {
+                console.log('Command: [' + command.type + '] Execute.');
+                switch (command.type) {
+                case 'player.current':
+                    this.player = this.world.entities.find(command.data);
+                    break;
+                default:
+                    console.log('Command: [' + command.type + '] Unknown command.');
+                }
+            }.bind(this));
+
             // FARMER
             nemitter.on('farmer.add', function (farmer) {
-                this.world.entities.add(farmer);
+                //this.world.entities.add(farmer);
             }.bind(this));
 
             nemitter.on('farmer.remove', function (farmer) {
@@ -116,9 +128,13 @@ define(
             }.bind(this));
 
             nemitter.on('farmer.change', function (farmer) {
-                var f = this.world.entities.find(farmer.id);
-                f.x = farmer.x;
-                f.y = farmer.y;
+                var f;
+                if (f = this.world.entities.find(farmer._id)) {
+                    f.x = farmer.x;
+                    f.y = farmer.y;
+                } else {
+                    this.world.entities.add(farmer);
+                }
             }.bind(this));
 
             // CHUNK
@@ -161,9 +177,6 @@ define(
         Application.prototype.initGuiEvents = function () {
             // ENTITY
             guiemitter.on('entity.add', this.addDrawableToLayer('entities'));
-            guiemitter.on('entity.add', function (player) {
-                this.player = player;
-            }.bind(this));
             guiemitter.on('entity.remove', this.removeDrawableFromLayer('entities'));
 
             // EVENT

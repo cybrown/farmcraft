@@ -13,7 +13,7 @@ define(function () {
     };
 
     Collection.prototype.add = function (entity) {
-        this.entities[entity.id] = entity;
+        this.entities[entity._id] = entity;
         entity.collection = this;
         this.emitter.emit(this.name + '.add', entity);
         return this;
@@ -27,7 +27,7 @@ define(function () {
         var index = this.entities.indexOf(entity);
         if (this.entities.hasOwnProperty(id)) {
             this.emitter.emit(this.name + '.remove', this.entities[entity]);
-            delete this.entities[entity.id];
+            delete this.entities[entity._id];
         }
     };
 

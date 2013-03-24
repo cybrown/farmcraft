@@ -50,7 +50,7 @@ require(['application', 'farmer', 'effects/rain', 'networkemitter', 'network'], 
 
     GOD.ev.sendNotify = function () {
         net.notifychange({
-            'id': app.player.id,
+            'id': app.player._id,
             'x': 64,
             //'x': app.player.x,
             'y': 64

@@ -7,12 +7,6 @@ var FarmerSchema = new mongoose.Schema({
     y: Number
 });
 
-FarmerSchema.statics.create = function (hash) {
-    var result = new this(hash);
-    emitter.emit('farmer.create', result);
-    return result;
-};
-
 FarmerSchema.post('save', function (farmer) {
     emitter.emit('farmer.change', farmer);
 });

@@ -7,9 +7,9 @@ define(['networkemitter', 'farmer'], function (nemitter, Farmer) {
     };
 
     // type, x, y, img?
-    var entityFactory = function (hash) {
+    var entityFactory = function (model, hash) {
         var res;
-        switch (hash.type) {
+        switch (model) {
         case 'farmer':
             res = new Farmer();
             var img = new Image();
@@ -17,7 +17,7 @@ define(['networkemitter', 'farmer'], function (nemitter, Farmer) {
             res.init(img);
             break;
         }
-        res.id = hash.id;
+        res._id = hash._id;
         res.x = hash.x;
         res.y = hash.y;
         return res;
@@ -27,7 +27,11 @@ define(['networkemitter', 'farmer'], function (nemitter, Farmer) {
         this.socket = io.connect('/' + channel);
         this.socket.on('message', function (event) {
             console.log(event);
-            nemitter.emit(event.type, entityFactory(event.data));
+            nemitter.emit(event.type, entityFactory(event.model, event.data));
+        });
+
+        this.socket.on('command', function (event) {
+            nemitter.emit('command', event);
         });
 
         this.socket.on('notifychange', function (data) {
