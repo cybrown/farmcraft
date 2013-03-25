@@ -6,7 +6,7 @@ define(
         'world/world',
         'guiemitter',
         'networkemitter',
-        'farmer',
+        'views/farmer',
         'keyboard',
         'domready!'
     ],
@@ -53,7 +53,7 @@ define(
             guiemitter.on('keyboard.up.down', function () {
                 console.log('start move player up');
                 if (this.player !== null) {
-                    this.net.notifychange({
+                    this.net.update('farmers', this.player._id, {
                         '_id': this.player._id,
                         'x': this.player.x,
                         'y': this.player.y - 32
@@ -66,7 +66,7 @@ define(
             guiemitter.on('keyboard.down.down', function () {
                 console.log('start move player down');
                 if (this.player !== null) {
-                    this.net.notifychange({
+                    this.net.update('farmers', this.player._id, {
                         '_id': this.player._id,
                         'x': this.player.x,
                         'y': this.player.y + 32
@@ -79,7 +79,7 @@ define(
             guiemitter.on('keyboard.right.down', function () {
                 console.log('start move player right');
                 if (this.player !== null) {
-                    this.net.notifychange({
+                    this.net.update('farmers', this.player._id, {
                         '_id': this.player._id,
                         'x': this.player.x + 32,
                         'y': this.player.y
@@ -92,7 +92,7 @@ define(
             guiemitter.on('keyboard.left.down', function () {
                 console.log('start move player left');
                 if (this.player !== null) {
-                    this.net.notifychange({
+                    this.net.update('farmers', this.player._id, {
                         '_id': this.player._id,
                         'x': this.player.x - 32,
                         'y': this.player.y
@@ -110,30 +110,30 @@ define(
             nemitter.on('command', function (command) {
                 console.log('Command: [' + command.type + '] Execute.');
                 switch (command.type) {
-                case 'player.current':
-                    this.player = this.world.entities.find(command.data);
-                    break;
-                default:
-                    console.log('Command: [' + command.type + '] Unknown command.');
+                    case 'player.current':
+                        this.player = this.world.entities.find(command.data);
+                        break;
+                    default:
+                        console.log('Command: [' + command.type + '] Unknown command.');
                 }
             }.bind(this));
 
             // FARMER
-            nemitter.on('farmer.add', function (farmer) {
-                this.world.entities.add(farmer);
-            }.bind(this));
-
             nemitter.on('farmer.remove', function (farmer) {
                 this.world.entities.remove(farmer);
             }.bind(this));
 
-            nemitter.on('farmer.change', function (farmer) {
-                var f;
-                if (f = this.world.entities.find(farmer._id)) {
-                    f.x = farmer.x;
-                    f.y = farmer.y;
+            nemitter.on('model', function (event) {
+                if (event.object === null) {
+                    this.world.entities.remove(event._id);
                 } else {
-                    this.world.entities.add(farmer);
+                    var object = this.world.entities.find(event._id);
+                    if (object === null) {
+                        object = (new Farmer()).init();
+                        object._id = event._id;
+                        this.world.entities.add(object);
+                    }
+                    object.fromArray(event.object);
                 }
             }.bind(this));
 
@@ -185,12 +185,6 @@ define(
 
             // TILEMAP
             guiemitter.on('tilemap.set', this.addDrawableToLayer('tilemap'));
-
-
-            guiemitter.on('entity.change', function (entity) {
-                
-                console.log(entity);
-            });
         };
 
         Application.prototype.start = function () {

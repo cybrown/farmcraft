@@ -1,26 +1,34 @@
 var mongoose = require('mongoose');
 var emitter = require('./../globalEmitter');
 
-var FarmerSchema = new mongoose.Schema({
+var members = {
     pseudo : String,
     x: Number,
     y: Number,
     level: Number,
     experience: Number
-});
-
-var eventPrefix = 'farmer';
-var getEventName = function (name) {
-    return eventPrefix + '.' + name;
 };
 
+var FarmerSchema = new mongoose.Schema(members);
+
 FarmerSchema.post('save', function (farmer) {
-    emitter.emit(getEventName('change'), farmer);
+    emitter.emit('farmer.change', farmer);
 });
 
 FarmerSchema.post('remove', function (farmer) {
-   emitter.emit(getEventName('remove'), farmer);
+    console.log('remove');
+   emitter.emit('farmer.remove', farmer);
 });
+
+FarmerSchema.methods.fromHash = function (hash) {
+    // TODO Optimiser cette fonction
+    // TODO Utiliser un tableau de membres statics
+    for (key in members) {
+        if (members.hasOwnProperty(key) && hash.hasOwnProperty(key)) {
+            this[key] = hash[key];
+        }
+    }
+};
 
 var Farmer = mongoose.model('Farmer', FarmerSchema);
 
