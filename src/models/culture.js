@@ -15,3 +15,5 @@ var CultureSchema = mongoose.Schema({
 });
 
 var Culture = mongoose.model('Culture', CultureSchema);
+
+module.exports = Culture;

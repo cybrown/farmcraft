@@ -48,6 +48,7 @@
 
     // Entities
     var Farmer = require('./models/farmer');
+    var Building = require('./models/building');
 
     // Entity emitter
     var emitter = require('./globalEmitter');
@@ -65,7 +66,19 @@
         });
     });
 
+    /*
+    emitter.on('building.create', function (building) {
+       channel.socket.emit('message', {
+          'type': 'building.add',
+           'model': 'building',
+           'data': building,
+           'tag': 'create'
+       });
+    });
+    */
+
     emitter.on('farmer.change', function (farmer) {
+        console.log('here : ');
         channel.sockets.emit('message', {
             'type': 'farmer.change',
             'model': 'farmer',

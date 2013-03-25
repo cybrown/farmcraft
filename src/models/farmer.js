@@ -4,7 +4,9 @@ var emitter = require('./../globalEmitter');
 var FarmerSchema = new mongoose.Schema({
     pseudo : String,
     x: Number,
-    y: Number
+    y: Number,
+    level: Number,
+    experience: Number
 });
 
 FarmerSchema.post('save', function (farmer) {
