@@ -4,7 +4,9 @@ var emitter = require('./../globalEmitter');
 var members = {
     pseudo : String,
     x: Number,
-    y: Number
+    y: Number,
+    level: Number,
+    experience: Number
 };
 
 var FarmerSchema = new mongoose.Schema(members);

@@ -44,7 +44,6 @@
         if (err) { throw err; }
     });
 
-
     // Entity emitter
     var emitter = require('./globalEmitter');
 
@@ -68,6 +67,17 @@
     var getModelByName = function (name) {
         return modelList[name] || null;
     };
+
+    /*
+    emitter.on('building.create', function (building) {
+       channel.socket.emit('message', {
+          'type': 'building.add',
+           'model': 'building',
+           'data': building,
+           'tag': 'create'
+       });
+    });
+    */
 
     emitter.on('farmer.change', function (farmer) {
         sendObject(channel.sockets, farmer);
