@@ -43,7 +43,6 @@
     });
 
     // Entities
-<<<<<<< Updated upstream
     var Farmer = function () {
         this.x = 0;
         this.y = 0;
@@ -60,11 +59,7 @@
     };
 
     var Collection = require('./collection');
-    
-=======
-    var Farmer = require('./models/farmer');
 
->>>>>>> Stashed changes
     // Entity emitter
     var emitter = new events.EventEmitter();
 
