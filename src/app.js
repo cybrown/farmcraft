@@ -5,18 +5,14 @@
 (function () {
     "use strict";
     var express = require('express'),
-        http = require('http'),
         app = express(),
-        fs = require('fs'),
-        events = require('events'),
-        server = http.createServer(app);
-        var mongoose = require('mongoose');
+        server = require('http').createServer(app);
 
-    mongoose.connect('mongodb://localhost/farmcraftdb', function (err) {
-        if (err) { throw err; }
-    });
 
     app.set('port', process.env.PORT || 3000);
+
+    // HTTP Configuration
+    var fs = require('fs');
     app.set('view engine', 'jade');
 
     app.use(express['static'](__dirname + '/public'));
@@ -42,12 +38,12 @@
         });
     });
 
-    server.listen(app.get('port'), function () {
-        console.log("Server listening on port " + app.get('port'));
+    // WEBSOCKET Configuration
+    var mongoose = require('mongoose');
+    mongoose.connect('mongodb://localhost/farmcraftdb', function (err) {
+        if (err) { throw err; }
     });
 
-    // Entities
-    var Farmer = require('./models/farmer');
 
     // Entity emitter
     var emitter = require('./globalEmitter');
@@ -55,32 +51,33 @@
     // Create comminucation channel for this game
     var channel = require('socket.io').listen(server);
 
-    // Listner for changes in the models and send them to the clients
-    emitter.on('farmer.create', function (farmer) { // New farmer
-        channel.sockets.emit('message', {
-            'type': 'farmer.add',
-            'model': 'farmer',
-            'data': farmer,
-            'tag': 'create'
+    // TODO Create module
+    var sendObject = function (socket, object, remove) {
+        socket.emit('model', {
+            'model': object.collection.name,
+            'object': remove ? null : object,
+            '_id': object._id
         });
-    });
+    };
+
+    // TODO Mettre cet objet dans le fichier de configuration
+    var modelList = {
+        'farmers' : require('./models/farmer')
+    };
+
+    var getModelByName = function (name) {
+        return modelList[name] || null;
+    };
 
     emitter.on('farmer.change', function (farmer) {
-        channel.sockets.emit('message', {
-            'type': 'farmer.change',
-            'model': 'farmer',
-            'data': farmer
-        });
+        sendObject(channel.sockets, farmer);
     });
 
     emitter.on('farmer.remove', function (farmer) {
-        channel.sockets.emit('message', {
-            'type': 'farmer.remove', 
-            'data': farmer
-        });
+        sendObject(channel.sockets, farmer, true); // TODO do remove
     });
 
-    Farmer.remove();
+    // TODO Remove all entities when server boots ?
 
     // Listen and setup events for a new connection
     channel.on('connection', function (socket) {
@@ -89,6 +86,7 @@
 
         // Create farmer for the incoming player
         setTimeout(function () {
+            var Farmer = require('./models/farmer');
             Farmer.create({x: 0, y: 0}, function (err, farmer) {
                 socket.session.farmer = farmer;
                 socket.emit('command', {
@@ -99,26 +97,24 @@
         }, 1000);
 
         // Send all farmers to the newly connected player
-        Farmer.find({}, function (err, allFarmers) {
-            allFarmers.forEach(function (farmer) {
-                //socket.emit('model', {
-                socket.emit('message', {
-                    'type': 'farmer.change',
-                    'model': 'farmer',
-                    'data': farmer,
-                    'tag': 'findAll'
+        for (var key in modelList) {
+            modelList[key].find({}, function (err, objects) {
+                objects.forEach(function (object) {
+                    sendObject(socket, object);
                 });
             });
-        });
+        }
 
-        // Receive commands from client
-        socket.on('notifychange', function (data) {
-            Farmer.findOne({'_id': data._id}, function (err, farmer) {
-                if (err) throw err;
-                farmer.x = data.x;
-                farmer.y = data.y;
-                farmer.save();
-            });
+        socket.on('update', function (event) {
+            // Mettre a jour l'objet
+            var model = getModelByName(event.name);
+            if (model !== null) {
+                model.findById(event._id, function (err, object) {
+                    object.fromHash(event.hash);
+                    console.log(object);
+                    object.save();
+                });
+            }
         });
 
         // The player has disconnected, remove listeners and remove his player from the game
@@ -126,12 +122,17 @@
             if (socket.session.hasOwnProperty('farmer')) {
 
                 console.log('Player disconnected: ' + socket.id);
-                Farmer.remove({'_id': socket.session.farmer._id}, function (err) {
+                socket.session.farmer.remove(function (err) {
+                    console.log('remove');
                     // TODO Handle error
                 });
             }
             console.log('Player disconnected: ' + socket.id);
         });
+    });
+
+    server.listen(app.get('port'), function () {
+        console.log("Server listening on port " + app.get('port'));
     });
 
 }());

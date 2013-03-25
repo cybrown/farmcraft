@@ -6,9 +6,6 @@ mongoose.connect('mongodb://localhost/farmcraftdb', function(err) {
     if (err) { throw err; }
 });
 
-var q = Farmer.find();
-
-q.exec(function (err, data) {
-    console.log(err);
-    console.log(data);
+Farmer.create({}, function (err, f) {
+    console.log(f.collection);
 });
