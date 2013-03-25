@@ -3,7 +3,7 @@
 var GOD = {};
 GOD.ev = {};
 
-require(['application', 'farmer', 'effects/rain', 'networkemitter', 'network'], function (Application, Farmer, Rain, nemitter, Network) {
+require(['application', 'farmer', 'effects/rain', 'networkemitter', 'network', 'culture', 'guiemitter', 'util/timer'], function (Application, Farmer, Rain, nemitter, Network, Culture, gemitter, Timer) {
 
     var app = new Application();
     var net = (new Network()).init('');
@@ -21,6 +21,17 @@ require(['application', 'farmer', 'effects/rain', 'networkemitter', 'network'], 
             return farmer;
     };
 
+    GOD.createCulture = function () {
+        var img = new Image();
+        img.src = 'img/tomate.png';
+        var culture = new Culture();
+            culture.init(img);
+        culture.x = 100;
+        culture.y = 100;
+        gemitter.emit('entity.add', culture);
+        return culture;
+    };
+
     GOD.app = app;
 
     GOD.createEvent = function (eventType) {
@@ -36,6 +47,11 @@ require(['application', 'farmer', 'effects/rain', 'networkemitter', 'network'], 
     };
     GOD.ev.playerRemove = function () {
         nemitter.emit('player.remove', evEntity);
+    };
+
+    var evEntity = GOD.createCulture();
+    GOD.ev.CultureAdd = function () {
+        nemitter.emit('culture.add', evEntity);
     };
 
     var evRain = GOD.createEvent()

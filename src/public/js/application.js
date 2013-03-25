@@ -8,9 +8,10 @@ define(
         'networkemitter',
         'farmer',
         'keyboard',
+        'culture',
         'domready!'
     ],
-    function (Drawer, Animator, World, guiemitter, nemitter, Farmer, Keyboard) {
+    function (Drawer, Animator, World, guiemitter, nemitter, Farmer, Keyboard, Culture) {
         'use strict';
 
         var Application = function () {
@@ -20,6 +21,7 @@ define(
             this.player = null;
             this.keyboard = null;
             this.net = null;
+            this.culture = null;
         };
 
         Application.prototype.init = function (canvas, net) {
@@ -120,7 +122,10 @@ define(
                 f.x = farmer.x;
                 f.y = farmer.y;
             }.bind(this));
-
+            // CULTURE
+            nemitter.on('culture.add', function (culture) {
+                this.world.entities.add(culture);
+            }.bind(this));
             // CHUNK
             nemitter.on('chunk.add', function (chunk) {
                 console.log('TODO: chunk.add');
@@ -170,6 +175,11 @@ define(
             guiemitter.on('event.add', this.addDrawableToLayer('sky'));
             guiemitter.on('event.remove', this.removeDrawableFromLayer('sky'));
 
+             //CULTURE
+            guiemitter.on('entity.add', this.addDrawableToLayer('entities'));
+            guiemitter.on('entity.add', function (culture) {
+                this.culture = culture;
+            }.bind(this));
             // TILEMAP
             guiemitter.on('tilemap.set', this.addDrawableToLayer('tilemap'));
 
