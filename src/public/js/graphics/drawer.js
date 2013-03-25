@@ -70,7 +70,7 @@ define(['graphics/layer', 'guiemitter', 'graphics/requestAnimationFrame'], funct
 
     Drawer.prototype.start = function () {
         emitter.emit('drawer.start-begin', this);
-        this.doIso();
+        //this.doIso();
         this.doRender = true;
         this.renderTick();
         emitter.emit('drawer.start-end', this);
