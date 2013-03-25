@@ -120,7 +120,7 @@ define(
 
             // FARMER
             nemitter.on('farmer.add', function (farmer) {
-                //this.world.entities.add(farmer);
+                this.world.entities.add(farmer);
             }.bind(this));
 
             nemitter.on('farmer.remove', function (farmer) {

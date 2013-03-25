@@ -12,5 +12,9 @@ var q = Farmer.find();
 
 q.exec(function (err, data) {
     console.log(err);
-    console.log(data);
+    console.log("joueur: " + data);
+});
+
+Building.create({ x: 100, y: 100 }, function (err, data) {
+    console.log("building: " + data);
 });

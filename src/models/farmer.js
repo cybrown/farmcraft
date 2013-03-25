@@ -9,12 +9,17 @@ var FarmerSchema = new mongoose.Schema({
     experience: Number
 });
 
+var eventPrefix = 'farmer';
+var getEventName = function (name) {
+    return eventPrefix + '.' + name;
+};
+
 FarmerSchema.post('save', function (farmer) {
-    emitter.emit('farmer.change', farmer);
+    emitter.emit(getEventName('change'), farmer);
 });
 
 FarmerSchema.post('remove', function (farmer) {
-   emitter.emit('farmer.remove', farmer);
+   emitter.emit(getEventName('remove'), farmer);
 });
 
 var Farmer = mongoose.model('Farmer', FarmerSchema);
