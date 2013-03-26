@@ -13,8 +13,10 @@ s.share('rand-2', function () {
 s.protect('rand-3', function () {
     return Math.random();
 });
+s.protect('rand-4', 42);
 
-assert.equal(s.get('rand-1'), s.get('rand-1'), 'Simple service passed !');
-assert.notEqual(s.get('rand-2'), s.get('rand-2'), 'Shared service passed !');
-assert.equal(typeof s.get('rand-3'), 'function'), 'Protected service passed !';
+assert.notEqual(s.get('rand-1'), s.get('rand-1'), 'Services defined with set must return different values.');
+assert.equal(s.get('rand-2'), s.get('rand-2'), 'Services defined with share must return the same value.');
+assert.equal(typeof s.get('rand-3'), 'function'), 'Protected services must return a function.';
+assert.equal(s.get('rand-4'), 42), 'Testing for a simple value.';
 console.log('All tests passed !');

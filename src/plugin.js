@@ -7,6 +7,7 @@
         this.events = {};
         this.models = {};
         this.hasFiles = false;
+        this.deps = [];
     };
 
     module.exports = Plugin;
