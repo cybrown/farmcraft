@@ -13,9 +13,9 @@ mongoose.connect('mongodb://localhost/farmcraftdb', function(err) {
 });
 
 // Creation du schema farmer
-var schFarmer = new mongoose.Schema({
-    pseudo : String,
-    x: Number,
+    var schFarmer = new mongoose.Schema({
+        pseudo : String,
+        x: Number,
     y: Number
 });
 

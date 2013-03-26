@@ -110,11 +110,11 @@ define(
             nemitter.on('command', function (command) {
                 console.log('Command: [' + command.type + '] Execute.');
                 switch (command.type) {
-                case 'player.current':
-                    this.player = this.world.entities.find(command.data);
-                    break;
-                default:
-                    console.log('Command: [' + command.type + '] Unknown command.');
+                    case 'player.current':
+                        this.player = this.world.entities.find(command.data);
+                        break;
+                    default:
+                        console.log('Command: [' + command.type + '] Unknown command.');
                 }
             }.bind(this));
 

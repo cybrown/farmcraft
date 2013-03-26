@@ -14,6 +14,20 @@ var CultureSchema = mongoose.Schema({
     maturity: Number
 });
 
+// todo
+var eventPrefix = 'culture';
+var getEventName = function (name) {
+    return eventPrefix + '.' + name;
+};
+
+CultureSchema.post('save', function (culture) {
+    emitter.emit(getEventName('change'), culture);
+});
+
+CultureSchema.post('remove', function (culture) {
+    emitter.emit(getEventName('remove'), culture);
+});
+
 var Culture = mongoose.model('Culture', CultureSchema);
 
 module.exports = Culture;

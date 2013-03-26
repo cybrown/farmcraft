@@ -10,6 +10,20 @@ var BuildingSchema = new mongoose.Schema({
     power: Number
 });
 
+
+var eventPrefix = 'building';
+var getEventName = function (name) {
+    return eventPrefix + '.' + name;
+};
+
+BuildingSchema.post('save', function (building) {
+    emitter.emit(getEventName('change'), building);
+});
+
+BuildingSchema.post('remove', function (building) {
+    emitter.emit(getEventName('remove'), building);
+});
+
 var Building = mongoose.model('Building', BuildingSchema);
 
 module.exports = Building;
