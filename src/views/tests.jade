@@ -1,13 +1,7 @@
-extends parts/page
+extends layout
 
 block content
-    //- p Ton texte
-    //- div
-    //- p.rouge Rouge
-    //- .rouge Rogue div
-    //- #bleu div bleu
-    //- t
-    ul
-        each file in tests
-            li
-                a(href=file) #{file}
+        ul
+            each file in tests
+                li
+                    a(href=file) #{file}
