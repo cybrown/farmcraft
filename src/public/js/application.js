@@ -53,7 +53,7 @@ define(
             guiemitter.on('keyboard.up.down', function () {
                 console.log('start move player up');
                 if (this.player !== null) {
-                    this.net.update('farmers', this.player._id, {
+                    this.net.update(this.player.modelName, this.player._id, {
                         '_id': this.player._id,
                         'x': this.player.x,
                         'y': this.player.y - 32
@@ -66,7 +66,7 @@ define(
             guiemitter.on('keyboard.down.down', function () {
                 console.log('start move player down');
                 if (this.player !== null) {
-                    this.net.update('farmers', this.player._id, {
+                    this.net.update(this.player.modelName, this.player._id, {
                         '_id': this.player._id,
                         'x': this.player.x,
                         'y': this.player.y + 32
@@ -79,7 +79,7 @@ define(
             guiemitter.on('keyboard.right.down', function () {
                 console.log('start move player right');
                 if (this.player !== null) {
-                    this.net.update('farmers', this.player._id, {
+                    this.net.update(this.player.modelName, this.player._id, {
                         '_id': this.player._id,
                         'x': this.player.x + 32,
                         'y': this.player.y
@@ -92,7 +92,7 @@ define(
             guiemitter.on('keyboard.left.down', function () {
                 console.log('start move player left');
                 if (this.player !== null) {
-                    this.net.update('farmers', this.player._id, {
+                    this.net.update(this.player.modelName, this.player._id, {
                         '_id': this.player._id,
                         'x': this.player.x - 32,
                         'y': this.player.y
@@ -129,6 +129,7 @@ define(
                 } else {
                     var object = this.world.entities.find(event._id);
                     if (object === null) {
+                        // TODO Cy - Supprimer la dependence a Farmer
                         object = (new Farmer()).init();
                         object._id = event._id;
                         this.world.entities.add(object);

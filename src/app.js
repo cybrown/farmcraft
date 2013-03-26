@@ -15,7 +15,7 @@
     var fs = require('fs');
     app.set('view engine', 'jade');
 
-    app.use(express['static'](__dirname + '/public'));
+    app.use(express.static(__dirname + '/public'));
 
     app.get('/', function (req, res) {
         res.render('index.jade');
@@ -38,8 +38,41 @@
         });
     });
 
+
+
+    var loadPluginEvents = function (plugin, emitter) {
+        for (var ev in plugin.events) {
+            if (typeof plugin.events[ev] === 'function') {
+                emitter.on(ev, plugin.events[ev]);
+            } else {
+                for (var f in plugin.events[ev]) {
+                    emitter.on(ev, plugin.events[ev][f]);
+                }
+            }
+        }
+    };
+
+    var loadPluginModels = function (plugin, modelContainer) {
+        for (var model in plugin.models) {
+            modelContainer[model] = plugin.models[model];
+        }
+    };
+
+    var loadPlugin = function (pluginName, emitter, modelContainer) {
+        var plugin = require('./plugins/' + pluginName);
+        loadPluginEvents(plugin, emitter);
+        loadPluginModels(plugin, modelContainer);
+        if (plugin.hasFiles) {
+            app.use(express.static(__dirname + '/plugins/' + pluginName + '/public'));
+        }
+    };
+
+
+
     // WEBSOCKET Configuration
     var mongoose = require('mongoose');
+
+    // TODO Cy - Declencher l'event db.started
     mongoose.connect('mongodb://localhost/farmcraftdb', function (err) {
         if (err) { throw err; }
     });
@@ -47,10 +80,18 @@
     // Entity emitter
     var emitter = require('./globalEmitter');
 
+    // TODO Mettre cet objet quelque part ou ca peut etre propre...
+    var modelList = {};
+
+    // Load plugins
+    // TODO Cy - Declencher l'event plugin loaded ou un truc du genre
+    //loadPlugin('demo', emitter, modelList);
+    loadPlugin('farmer', emitter, modelList);
+
     // Create comminucation channel for this game
     var channel = require('socket.io').listen(server);
 
-    // TODO Create module
+    // TODO Cy - Cette fonction doit etre ranger quelque part
     var sendObject = function (socket, object, remove) {
         socket.emit('model', {
             'model': object.collection.name,
@@ -59,69 +100,46 @@
         });
     };
 
-    // TODO Mettre cet objet dans le fichier de configuration
-    var modelList = {
-        'farmers' : require('./models/farmer')
-    };
-
+    // TODO Cy - Cette fonction doit etre ranger quelque part
     var getModelByName = function (name) {
         return modelList[name] || null;
     };
 
-    /*
-    emitter.on('building.create', function (building) {
-       channel.socket.emit('message', {
-          'type': 'building.add',
-           'model': 'building',
-           'data': building,
-           'tag': 'create'
-       });
-    });
-    */
-
+    // TODO Cy - il faut refactoriser ces bouts de code pour generalier a tous les models...
     emitter.on('farmer.change', function (farmer) {
         sendObject(channel.sockets, farmer);
     });
-
     emitter.on('farmer.remove', function (farmer) {
         sendObject(channel.sockets, farmer, true); // TODO do remove
     });
-
-    // TODO Remove all entities when server boots ?
 
     // Listen and setup events for a new connection
     channel.on('connection', function (socket) {
         socket.session = {};
         console.log('New player: ' + socket.id);
+        emitter.emit('app.connection', {
+            'session': socket.session,
+            'socket': socket
+        });
 
-        // Create farmer for the incoming player
-        setTimeout(function () {
-            var Farmer = require('./models/farmer');
-            Farmer.create({x: 0, y: 0}, function (err, farmer) {
-                socket.session.farmer = farmer;
-                socket.emit('command', {
-                    'type': 'player.current',
-                    'data': farmer._id
-                });
-            });
-        }, 1000);
-
-        // Send all farmers to the newly connected player
+        // Send all models to the newly connected player
+        // TODO Cy - Dans l'ideal, il ne faut pas envoyer tous les models, seulement ceux qui sont necessaires (geographiquement proches, etc...)
         for (var key in modelList) {
             modelList[key].find({}, function (err, objects) {
-                objects.forEach(function (object) {
-                    sendObject(socket, object);
-                });
+                if (objects[0]) {
+                    console.log('Sending models: ' + objects[0].constructor.modelName);
+                    objects.forEach(function (object) {
+                        sendObject(socket, object);
+                    });
+                }
             });
         }
 
         socket.on('update', function (event) {
-            // Mettre a jour l'objet
             var model = getModelByName(event.name);
             if (model !== null) {
                 model.findById(event._id, function (err, object) {
                     object.fromHash(event.hash);
-                    console.log(object);
                     object.save();
                 });
             }
@@ -129,14 +147,10 @@
 
         // The player has disconnected, remove listeners and remove his player from the game
         socket.on('disconnect', function () {
-            if (socket.session.hasOwnProperty('farmer')) {
-
-                console.log('Player disconnected: ' + socket.id);
-                socket.session.farmer.remove(function (err) {
-                    console.log('remove');
-                    // TODO Handle error
-                });
-            }
+            emitter.emit('app.disconnect', {
+                'session': socket.session,
+                'socket': socket
+            });
             console.log('Player disconnected: ' + socket.id);
         });
     });
