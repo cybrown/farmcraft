@@ -13,7 +13,6 @@ define(function () {
     };
 
     Collection.prototype.add = function (entity) {
-        console.log('Collection#add ' + entity._id);
         this.entities[entity._id] = entity;
         entity.collection = this;
         this.emitter.emit(this.name + '.add', entity);

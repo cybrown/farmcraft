@@ -94,7 +94,7 @@
     // TODO Cy - Cette fonction doit etre ranger quelque part
     var sendObject = function (socket, object, remove) {
         socket.emit('model', {
-            'model': object.collection.name,
+            'model': object.constructor.modelName,
             'object': remove ? null : object,
             '_id': object._id
         });

@@ -21,7 +21,6 @@ define(function () {
         if (index !== -1) {
             this.drawables[index] = this.drawables[this.drawables.length - 1];
             this.drawables.pop();
-            console.log('ok');
         }
         return this;
     };

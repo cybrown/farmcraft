@@ -23,11 +23,11 @@
 
     // On definit les evenements pour le shema
     schema.post('save', function (object) {
-        emitter.emit('animal.change', object);  /**/
+        emitter.emit('animal.change', object);  /**/ // TODO Cy - Il faut changer le nom des evenements pour ne plus y avoir le nom du model
     });
 
     schema.post('remove', function (object) {
-        emitter.emit('animal.remove', object);  /**/
+        emitter.emit('animal.remove', object);  /**/ // TODO Cy - Pareil, il faut pas retrouver le nom du model ici
     });
 
     // C'est la methode qui permet de mettre le contenu d'un tableau a la con dans un model

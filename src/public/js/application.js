@@ -8,9 +8,10 @@ define(
         'networkemitter',
         'views/farmer',
         'keyboard',
+        'globalviewcontainer',
         'domready!'
     ],
-    function (Drawer, Animator, World, guiemitter, nemitter, Farmer, Keyboard) {
+    function (Drawer, Animator, World, guiemitter, nemitter, Farmer, Keyboard, views) {
         'use strict';
 
         var Application = function () {
@@ -51,7 +52,6 @@ define(
             this.keyboard = new Keyboard();
             this.keyboard.enable();
             guiemitter.on('keyboard.up.down', function () {
-                console.log('start move player up');
                 if (this.player !== null) {
                     this.net.update(this.player.modelName, this.player._id, {
                         '_id': this.player._id,
@@ -61,10 +61,9 @@ define(
                 }
             }.bind(this));
             guiemitter.on('keyboard.up.up', function () {
-                console.log('stop move player up');
+
             }.bind(this));
             guiemitter.on('keyboard.down.down', function () {
-                console.log('start move player down');
                 if (this.player !== null) {
                     this.net.update(this.player.modelName, this.player._id, {
                         '_id': this.player._id,
@@ -74,10 +73,9 @@ define(
                 }
             }.bind(this));
             guiemitter.on('keyboard.down.up', function () {
-                console.log('stop move player down');
+
             }.bind(this));
             guiemitter.on('keyboard.right.down', function () {
-                console.log('start move player right');
                 if (this.player !== null) {
                     this.net.update(this.player.modelName, this.player._id, {
                         '_id': this.player._id,
@@ -87,10 +85,9 @@ define(
                 }
             }.bind(this));
             guiemitter.on('keyboard.right.up', function () {
-                console.log('stop move player right');
+                
             }.bind(this));
             guiemitter.on('keyboard.left.down', function () {
-                console.log('start move player left');
                 if (this.player !== null) {
                     this.net.update(this.player.modelName, this.player._id, {
                         '_id': this.player._id,
@@ -100,7 +97,7 @@ define(
                 }
             }.bind(this));
             guiemitter.on('keyboard.left.up', function () {
-                console.log('stop move player left');
+
             }.bind(this));
 
         };
@@ -118,10 +115,8 @@ define(
                 }
             }.bind(this));
 
-            // FARMER
-            nemitter.on('farmer.remove', function (farmer) {
-                this.world.entities.remove(farmer);
-            }.bind(this));
+            // TODO Cy - Trouver un moyen d'injecter cette dependence
+            views.add('Farmer', Farmer);
 
             nemitter.on('model', function (event) {
                 if (event.object === null) {
@@ -129,8 +124,7 @@ define(
                 } else {
                     var object = this.world.entities.find(event._id);
                     if (object === null) {
-                        // TODO Cy - Supprimer la dependence a Farmer
-                        object = (new Farmer()).init();
+                        object = (new (views.get(event.model))).init();
                         object._id = event._id;
                         this.world.entities.add(object);
                     }

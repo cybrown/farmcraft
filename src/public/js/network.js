@@ -10,7 +10,6 @@ define(['networkemitter'], function (nemitter) {
         this.socket = io.connect('/' + channel);
 
         this.socket.on('model', function (event) {
-            console.log(event);
             nemitter.emit('model', event);
         });
 
@@ -18,15 +17,7 @@ define(['networkemitter'], function (nemitter) {
             nemitter.emit('command', event);
         });
 
-        this.socket.on('notifychange', function (data) {
-            console.log('CHANGE');
-            console.log(data);
-        });
         return this;
-    };
-
-    Network.prototype.notifychange = function (data) {
-        this.socket.emit('notifychange', data);
     };
 
     Network.prototype.update = function (name, _id, hash) {
