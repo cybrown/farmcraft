@@ -15,10 +15,26 @@
     var fs = require('fs');
     app.set('view engine', 'jade');
 
+    // Using provider service
+    var userProvider = require('./userprovider');
+
     app.use(express.static(__dirname + '/public'));
+
+    app.use(express.bodyParser());
 
     app.get('/', function (req, res) {
         res.render('index.jade');
+    });
+
+    app.get('/login', function (req, res) {
+        res.render('login.jade');
+    });
+
+    app.post('/login', function (req, res) {
+        console.log(req.body.login);
+        console.log(req.body.password);
+        var p = new userProvider();
+        p.authenticate(req.body.login, req.body.password);
     });
 
     app.get('/tests', function (req, res) {

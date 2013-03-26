@@ -1,8 +1,9 @@
 var mongoose = require('mongoose');
 var emitter = require('./../globalEmitter');
+var ItemSchema =  require('./item');
 
 var InventorySchema = new mongoose.Schema({
-    items: {},
+    items: [ ItemSchema ],
     slots: Number,
     capacity: Number
 });
