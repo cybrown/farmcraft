@@ -13,21 +13,20 @@ define(function () {
     };
 
     Collection.prototype.add = function (entity) {
-        this.entities[entity.id] = entity;
+        this.entities[entity._id] = entity;
         entity.collection = this;
         this.emitter.emit(this.name + '.add', entity);
         return this;
     };
 
     Collection.prototype.find = function (id) {
-        return this.entities[id];
+        return this.entities[id] || null;
     };
 
     Collection.prototype.remove = function (id) {
-        var index = this.entities.indexOf(entity);
         if (this.entities.hasOwnProperty(id)) {
-            this.emitter.emit(this.name + '.remove', this.entities[entity]);
-            delete this.entities[entity.id];
+            this.emitter.emit(this.name + '.remove', this.entities[id]);
+            delete this.entities[id];
         }
     };
 

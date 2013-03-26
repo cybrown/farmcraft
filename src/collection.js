@@ -39,6 +39,7 @@
     };
 
     Collection.prototype.remove = function (entity) {
+        if (!entity) return;
         if (this.entities.hasOwnProperty(entity.id)) {
             this.emitter.emit(this.name + '.remove', entity);
             delete this.entities[entity.id];

@@ -6,12 +6,13 @@ define(
         'world/world',
         'guiemitter',
         'networkemitter',
-        'farmer',
+        'views/farmer',
         'keyboard',
+        'globalviewcontainer',
         'culture',
         'domready!'
     ],
-    function (Drawer, Animator, World, guiemitter, nemitter, Farmer, Keyboard, Culture) {
+    function (Drawer, Animator, World, guiemitter, nemitter, Farmer, Keyboard, views, Culture) {
         'use strict';
 
         var Application = function () {
@@ -53,74 +54,84 @@ define(
             this.keyboard = new Keyboard();
             this.keyboard.enable();
             guiemitter.on('keyboard.up.down', function () {
-                console.log('start move player up');
                 if (this.player !== null) {
-                    this.net.notifychange({
-                        'id': this.player.id,
+                    this.net.update(this.player.modelName, this.player._id, {
+                        '_id': this.player._id,
                         'x': this.player.x,
                         'y': this.player.y - 32
                     });
                 }
             }.bind(this));
             guiemitter.on('keyboard.up.up', function () {
-                console.log('stop move player up');
+
             }.bind(this));
             guiemitter.on('keyboard.down.down', function () {
-                console.log('start move player down');
                 if (this.player !== null) {
-                    this.net.notifychange({
-                        'id': this.player.id,
+                    this.net.update(this.player.modelName, this.player._id, {
+                        '_id': this.player._id,
                         'x': this.player.x,
                         'y': this.player.y + 32
                     });
                 }
             }.bind(this));
             guiemitter.on('keyboard.down.up', function () {
-                console.log('stop move player down');
+
             }.bind(this));
             guiemitter.on('keyboard.right.down', function () {
-                console.log('start move player right');
                 if (this.player !== null) {
-                    this.net.notifychange({
-                        'id': this.player.id,
+                    this.net.update(this.player.modelName, this.player._id, {
+                        '_id': this.player._id,
                         'x': this.player.x + 32,
                         'y': this.player.y
                     });
                 }
             }.bind(this));
             guiemitter.on('keyboard.right.up', function () {
-                console.log('stop move player right');
+                
             }.bind(this));
             guiemitter.on('keyboard.left.down', function () {
-                console.log('start move player left');
                 if (this.player !== null) {
-                    this.net.notifychange({
-                        'id': this.player.id,
+                    this.net.update(this.player.modelName, this.player._id, {
+                        '_id': this.player._id,
                         'x': this.player.x - 32,
                         'y': this.player.y
                     });
                 }
             }.bind(this));
             guiemitter.on('keyboard.left.up', function () {
-                console.log('stop move player left');
+
             }.bind(this));
 
         };
 
         Application.prototype.initNetworkEvents = function () {
-            // FARMER
-            nemitter.on('farmer.add', function (farmer) {
-                this.world.entities.add(farmer);
+            // COMMAND
+            nemitter.on('command', function (command) {
+                console.log('Command: [' + command.type + '] Execute.');
+                switch (command.type) {
+                    case 'player.current':
+                        this.player = this.world.entities.find(command.data);
+                        break;
+                    default:
+                        console.log('Command: [' + command.type + '] Unknown command.');
+                }
             }.bind(this));
 
-            nemitter.on('farmer.remove', function (farmer) {
-                this.world.entities.remove(farmer);
-            }.bind(this));
+            // TODO Cy - Trouver un moyen d'injecter cette dependence
+            views.add('Farmer', Farmer);
 
-            nemitter.on('farmer.change', function (farmer) {
-                var f = this.world.entities.find(farmer.id);
-                f.x = farmer.x;
-                f.y = farmer.y;
+            nemitter.on('model', function (event) {
+                if (event.object === null) {
+                    this.world.entities.remove(event._id);
+                } else {
+                    var object = this.world.entities.find(event._id);
+                    if (object === null) {
+                        object = (new (views.get(event.model))).init();
+                        object._id = event._id;
+                        this.world.entities.add(object);
+                    }
+                    object.fromArray(event.object);
+                }
             }.bind(this));
             // CULTURE
             nemitter.on('culture.add', function (culture) {
@@ -166,9 +177,6 @@ define(
         Application.prototype.initGuiEvents = function () {
             // ENTITY
             guiemitter.on('entity.add', this.addDrawableToLayer('entities'));
-            guiemitter.on('entity.add', function (player) {
-                this.player = player;
-            }.bind(this));
             guiemitter.on('entity.remove', this.removeDrawableFromLayer('entities'));
 
             // EVENT
@@ -182,12 +190,6 @@ define(
             }.bind(this));
             // TILEMAP
             guiemitter.on('tilemap.set', this.addDrawableToLayer('tilemap'));
-
-
-            guiemitter.on('entity.change', function (entity) {
-                
-                console.log(entity);
-            });
         };
 
         Application.prototype.start = function () {

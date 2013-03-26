@@ -19,17 +19,39 @@ define(function () {
         this.frame = 0;
         this.img = null;
         this.lastanim = 0;
-        this.id = 0;
+        this._id = 0;
         this.collection = null;
     };
 
     Farmer.prototype.DIRECTION = Farmer.DIRECTION = DIRECTION;
 
+    Farmer.prototype.modelName = 'Farmer';
+
     Farmer.prototype.init = function (img, x, y, r) {
-        this.img = img;
+        var img2 = new Image();
+        img2.src = 'img/frog.png';
+        this.img = img || img2;
         this.x = x || 0;
         this.y = y || 0;
         this.faceDirection = r || DIRECTION.down;
+        return this;
+    };
+
+    Farmer.prototype.fromArray = function (hash) {
+        ['_id', 'x', 'y'].forEach(function (key) {
+            if (hash.hasOwnProperty(key)) {
+                this[key] = hash[key];
+            }
+        }.bind(this));
+        return this;
+    };
+
+    Farmer.createFromArray = function (hash) {
+        var farmer;
+        farmer = new Farmer();
+        farmer.init(img);
+        farmer.fromArray(hash);
+        return farmer;
     };
 
     Farmer.prototype.move = function () {
@@ -50,10 +72,12 @@ define(function () {
         if (this.collection) {
             this.collection.notify(this);
         }
+        return this;
     };
 
     Farmer.prototype.draw = function (context) {
         context.drawImage(this.img, this.frame * 32, this.faceDirection * 32, 32, 32, 0, 0, 32, 32);
+        return this;
     };
 
     Farmer.prototype.update = function (delta) {
@@ -84,6 +108,7 @@ define(function () {
             this.frame = 0;
         }
         this.last = 0;
+        return this;
     };
 
     return Farmer;
