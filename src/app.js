@@ -16,7 +16,8 @@
     app.set('view engine', 'jade');
 
     // Using provider service
-    var userProvider = require('./userprovider');
+    var totoProvider = require('./totouserprovider')
+        , mongooseProvider =  require('./mongooseuserprovider');
 
     app.use(express.static(__dirname + '/public'));
 
@@ -31,10 +32,21 @@
     });
 
     app.post('/login', function (req, res) {
-        console.log(req.body.login);
-        console.log(req.body.password);
-        var p = new userProvider();
-        p.authenticate(req.body.login, req.body.password);
+        var p = new mongooseProvider();
+        p.authenticate(req.body.login, req.body.password, function (success) {
+            res.redirect(success ? '/' : '/login');
+        });
+    });
+
+    app.get('/register', function (req, res) {
+        res.render('register.jade');
+    });
+
+    app.post('/register', function (req, res) {
+        var p = new mongooseProvider();
+        if (p.registration(req.body.pseudo, req.body.login, req.body.password)) {
+            res.redirect('/');
+        }
     });
 
     app.get('/tests', function (req, res) {

@@ -8,9 +8,7 @@ html
         .container
             form.form-signin(method="POST")
                 h2.form-signin-heading Register
+                input.input-block-level(name='pseudo', type='text', placeholder='Pseudo in game')
                 input.input-block-level(name='login', type='text', placeholder='Login')
                 input.input-block-level(name='password', type='password', placeholder='Password')
-                label.checkbox
-                  input(type='checkbox', value='remember-me')
-                  | Remember me
-                button.btn.btn-large.btn-primary(type='submit') Connect
+                button.btn.btn-large.btn-primary(type='submit') Register
