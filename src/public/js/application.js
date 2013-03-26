@@ -184,10 +184,10 @@ define(
             guiemitter.on('event.remove', this.removeDrawableFromLayer('sky'));
 
              //CULTURE
-            guiemitter.on('entity.add', this.addDrawableToLayer('entities'));
-            guiemitter.on('entity.add', function (culture) {
-                this.culture = culture;
-            }.bind(this));
+            //guiemitter.on('entity.add', this.addDrawableToLayer('entities'));
+            //guiemitter.on('entity.add', function (culture) {
+            //    this.culture = culture;
+            //}.bind(this));
             // TILEMAP
             guiemitter.on('tilemap.set', this.addDrawableToLayer('tilemap'));
         };
