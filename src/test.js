@@ -9,8 +9,8 @@
     var Chunk = require('./plugins/board/models/chunk');
 
     var c = Chunk.create({
-        x: 0,
-        y: 0,
+        mapx: 1,
+        mapy: 0,
         tiles: [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -29,7 +29,7 @@
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ]
-    }, function (chunk) {
+    }, function (err, chunk) {
         console.log(chunk);
     });
 }());

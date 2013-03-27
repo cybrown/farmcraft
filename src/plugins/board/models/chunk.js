@@ -5,8 +5,8 @@
         emitter = require('./../../../globalEmitter'),
         name = 'Chunk',
         members = {
-            'x':   Number,
-            'y':   Number,
+            'mapx':   Number,
+            'mapy':   Number,
             'tiles': [{}]
         },
         schema = new mongoose.Schema(members);

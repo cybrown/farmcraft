@@ -18,33 +18,45 @@ define(function () {
     var dic = [tiles.eau, tiles.herbe, tiles.roche, tiles.sable, tiles.snow, tiles.dirt];
     // TODO end todo
 
+    var defaultTiles = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ];
+
     var Chunk = function () {
-        this.tiles = [
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [3, 3, 1, 1, 3, 1, 1, 3, 3, 1, 1, 3, 1, 1, 1, 3],
-            [3, 1, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 3, 1, 3, 3],
-            [3, 3, 1, 3, 3, 3, 1, 3, 3, 1, 1, 3, 1, 3, 1, 3],
-            [3, 1, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 1, 1, 3],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [3, 3, 1, 3, 3, 1, 1, 1, 3, 1, 1, 3, 3, 2, 2, 2],
-            [3, 1, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 1, 2, 1],
-            [3, 1, 1, 3, 3, 1, 1, 3, 3, 3, 1, 3, 3, 1, 2, 1],
-            [3, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 1, 2, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        ];
-        this.x = 0;
-        this.y = 0;
+        this.tiles = defaultTiles;
+        this.mapx = 0;
+        this.mapy = 0;
         this.tileWidth = 32;
         this.tileHeight = 32;
+        Object.defineProperty(this, 'x', {
+            get: function () {return this.mapx * 512; },
+            set: function (value) {}
+        });
+        Object.defineProperty(this, 'y', {
+            get: function () {return this.mapy * 512; },
+            set: function (value) {}
+        });
         return this;
     };
 
     Chunk.prototype.modelName = 'Chunk';
+
+    Chunk.defaultLayer = Chunk.prototype.defaultLayer = 'tilemap';
 
     Chunk.prototype.init = function () {
 
@@ -52,7 +64,7 @@ define(function () {
     };
 
     Chunk.prototype.fromHash = function (hash) {
-        ['_id', 'x', 'y', 'tiles'].forEach(function (key) {
+        ['_id', 'mapx', 'mapy', 'tiles'].forEach(function (key) {
             if (hash.hasOwnProperty(key)) {
                 this[key] = hash[key];
             }
@@ -61,8 +73,9 @@ define(function () {
     };
 
     Chunk.prototype.draw = function (context) {
-        for (var i = 0; i < this.tiles.length; i += 1) {
-            for (var j = 0; j < this.tiles[i].length; j += 1) {
+        var i, j;
+        for (i = 0; i < this.tiles.length; i += 1) {
+            for (j = 0; j < this.tiles[i].length; j += 1) {
                 context.drawImage(dic[this.tiles[i][j]], j * this.tileWidth, i * this.tileHeight, this.tileWidth, this.tileHeight);
             }
         }

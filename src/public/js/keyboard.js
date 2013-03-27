@@ -1,4 +1,4 @@
-/*global document */
+/*global document, define */
 define(['guiemitter'], function (emitter) {
     'use strict';
 
@@ -35,7 +35,11 @@ define(['guiemitter'], function (emitter) {
                 emitter.emit('keyboard.down.down', this);
             }
             break;
+        default:
+            return;
         }
+        e.preventDefault();
+        return false;
     };
 
     var upHandler = function (e) {
@@ -64,7 +68,11 @@ define(['guiemitter'], function (emitter) {
                 emitter.emit('keyboard.down.up', this);
             }
             break;
+        default:
+            return;
         }
+        e.preventDefault();
+        return false;
     };
 
     Keyboard.prototype.enable = function () {
@@ -73,7 +81,7 @@ define(['guiemitter'], function (emitter) {
     };
 
     Keyboard.prototype.disable = function () {
-        document.removeEventListener('keydown', eventHandler);
+        document.removeEventListener('keydown', downHandler);
         document.removeEventListener('keyup', upHandler);
     };
 
