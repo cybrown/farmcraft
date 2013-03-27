@@ -1,25 +1,29 @@
+/*global module */
 // Un fichier d'exemple pour un model
 // les lignes avec /**/ sont sensees etre modifiees, les autres aussi mais moins souvent...
 
 // Tres important, la fonction qui s'execute elle meme avec le 'use strict'
 (function () {
+    'use strict';
     // Pour un model on a forcemment besoin de mongoose... x)
-    var mongoose = require('mongoose');
+    var mongoose = require('mongoose'),
 
     // On importe aussi l'emitter global
-    var emitter = require('./../../../globalEmitter');
+        emitter = require('./../../../globalEmitter'),
 
     // Tres important, le nom du model !!
-    var name = 'Animal';    /**/
+        name = 'Animal',    /**/
 
     // On definit le schema du model
-    var members = {
-        'nom': String,  /**/
-        'cri': String   /**/
-    };
+        members = {
+            'nom': String,  /**/
+            'cri': String,  /**/
+            'x':   Number,  /**/
+            'y':   Number   /**/
+        },
 
     // On creer le schema
-    var schema = new mongoose.Schema(members);
+        schema = new mongoose.Schema(members);
 
     // On definit les evenements pour le shema
     schema.post('save', function (object) {
@@ -34,6 +38,7 @@
     // Il est possible de la modifier si le model a un comportement a la con avec
     // certain de ses attributs
     schema.methods.fromHash = function (hash) {
+        var key;
         for (key in members) {
             if (members.hasOwnProperty(key) && hash.hasOwnProperty(key)) {
                 this[key] = hash[key];
@@ -43,9 +48,6 @@
 
     /**/ // On peut definir les methodes et les statiques ici
 
-    // On creer enfin le vrai objet model
-    var Model = mongoose.model(name, schema);
-
-    // On exporte le model, c'est le seul truc qui va etre exporte en fait
-    module.exports = Model;
+    // On creer le model et on l'exporte, c'est le seul truc qui va etre exporte en fait
+    module.exports = mongoose.model(name, schema);
 }());

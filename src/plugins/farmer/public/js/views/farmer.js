@@ -37,7 +37,7 @@ define(function () {
         return this;
     };
 
-    Farmer.prototype.fromArray = function (hash) {
+    Farmer.prototype.fromHash = function (hash) {
         ['_id', 'x', 'y'].forEach(function (key) {
             if (hash.hasOwnProperty(key)) {
                 this[key] = hash[key];
@@ -46,11 +46,11 @@ define(function () {
         return this;
     };
 
-    Farmer.createFromArray = function (hash) {
+    Farmer.createFromHash = function (hash) {
         var farmer;
         farmer = new Farmer();
         farmer.init(img);
-        farmer.fromArray(hash);
+        farmer.fromHash(hash);
         return farmer;
     };
 

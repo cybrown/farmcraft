@@ -148,7 +148,7 @@ define(
                         object._id = event._id;
                         this.world.entities.add(object);
                     }
-                    object.fromArray(event.object);
+                    object.fromHash(event.object);
                 }
             }.bind(this));
             // CULTURE

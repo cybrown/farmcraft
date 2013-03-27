@@ -6,12 +6,25 @@ define([], function () {
     "use strict";
 
     var Animal = function () {
-
+        this.nom = '';
+        this.cri = '';
+        this.x = 0;
+        this.y = 0;
     };
 
     Animal.prototype.init = function () {
 
         return this;    // Toujours retourner this a la place de ne rien retourner, pour pouvoir chainer les appels
+    };
+
+    // Methode pour injecter les valeur d'un bete tableau associatif vers la vue
+    Animal.prototype.fromHash = function (hash) {
+        ['_id', 'x', 'y', 'cri', 'nom'].forEach(function (key) {
+            if (hash.hasOwnProperty(key)) {
+                this[key] = hash[key];
+            }
+        }.bind(this));
+        return this;
     };
 
     Animal.prototype.draw = function (ctx) {
