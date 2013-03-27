@@ -29,7 +29,7 @@
     var clientPlugins = [];
 
     var loadPlugin = function (pluginName, emitter, modelContainer) {
-        var plugin = require('./plugins/' + pluginName);
+        var plugin = require(__dirname + '/plugins/' + pluginName);
         loadPluginEvents(plugin, emitter);
         loadPluginModels(plugin, modelContainer);
         if (plugin.hasFiles) {
@@ -115,10 +115,13 @@
     };
 
     var startPlugins = function (next) {
-        // Load plugins
+        var fs = require('fs');
         // TODO Cy - Declencher l'event plugin loaded ou un truc du genre
-        loadPlugin('demo', emitter, modelList);
-        loadPlugin('farmer', emitter, modelList);
+        // TODO Utiliser la methode asynchrone et utiliser next()
+        var plugins = fs.readdirSync(__dirname + '/plugins');
+        plugins.forEach(function (pluginName) {
+            loadPlugin(pluginName, emitter, modelList);
+        });
         next();
     };
 
@@ -127,10 +130,10 @@
         var channel = require('socket.io').listen(server);
 
         // TODO Cy - il faut refactoriser ces bouts de code pour generalier a tous les models...
-        emitter.on('farmer.change', function (model) {
+        emitter.on('model.change', function (model) {
             sendObject(channel.sockets, model);
         });
-        emitter.on('farmer.remove', function (model) {
+        emitter.on('model.remove', function (model) {
             sendObject(channel.sockets, model, true); // TODO do remove
         });
 

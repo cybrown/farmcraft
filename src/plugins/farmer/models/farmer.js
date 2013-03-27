@@ -18,11 +18,11 @@ var schema = new mongoose.Schema(members);
 // On definit les evenements pour le shema
 schema.post('save', function (object) {
     console.log('save');
-    emitter.emit('farmer.change', object);
+    emitter.emit('model.change', object);
 });
 
 schema.post('remove', function (object) {
-    emitter.emit('farmer.remove', object);
+    emitter.emit('model.remove', object);
 });
 
 schema.methods.fromHash = function (hash) {

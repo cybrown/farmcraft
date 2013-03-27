@@ -25,13 +25,13 @@
     // On creer le schema
         schema = new mongoose.Schema(members);
 
-    // On definit les evenements pour le shema
+    // On definit les evenements pour le schema, pour declencher les events et la synchro des qu'on save ou remove
     schema.post('save', function (object) {
-        emitter.emit('animal.change', object);  /**/ // TODO Cy - Il faut changer le nom des evenements pour ne plus y avoir le nom du model
+        emitter.emit('model.change', object);
     });
 
     schema.post('remove', function (object) {
-        emitter.emit('animal.remove', object);  /**/ // TODO Cy - Pareil, il faut pas retrouver le nom du model ici
+        emitter.emit('model.remove', object);
     });
 
     // C'est la methode qui permet de mettre le contenu d'un tableau a la con dans un model

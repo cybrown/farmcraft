@@ -135,9 +135,6 @@ define(
                 }
             }.bind(this));
 
-            // TODO Cy - Trouver un moyen d'injecter cette dependence
-            //views.add('Farmer', Farmer);
-
             nemitter.on('model', function (event) {
                 if (event.object === null) {
                     this.world.entities.remove(event._id);
