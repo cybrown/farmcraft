@@ -44,6 +44,8 @@ define(function () {
         return this;
     };
 
+    Chunk.prototype.modelName = 'Chunk';
+
     Chunk.prototype.init = function () {
 
         return this;

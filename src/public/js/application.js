@@ -141,6 +141,7 @@ define(
                 } else {
                     var object = this.world.entities.find(event._id);
                     if (object === null) {
+                        console.log('Model: Create new ' + event.model + ' (' + event._id + ')');
                         object = (new (views.get(event.model))()).init();
                         object._id = event._id;
                         this.world.entities.add(object);
