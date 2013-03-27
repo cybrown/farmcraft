@@ -120,7 +120,9 @@
         // TODO Utiliser la methode asynchrone et utiliser next()
         var plugins = fs.readdirSync(__dirname + '/plugins');
         plugins.forEach(function (pluginName) {
-            loadPlugin(pluginName, emitter, modelList);
+            if (pluginName[0] !== '.') {
+                loadPlugin(pluginName, emitter, modelList);
+            }
         });
         next();
     };

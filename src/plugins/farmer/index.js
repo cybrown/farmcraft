@@ -1,10 +1,10 @@
+/*global module, console, setTimeout, require */
 // Plug in pour le farmer
 (function () {
     'use strict';
 
-    var Plugin = require('./../../plugin');
-
-    var plugin = new Plugin();
+    var Plugin = require('./../../plugin'),
+        plugin = new Plugin();
 
     plugin.hasFiles = true;
 
@@ -31,7 +31,6 @@
 
                 console.log('Player disconnected: ' + event.socket.id);
                 event.session.farmer.remove(function (err) {
-                    console.log('remove');
                     // TODO Handle error
                 });
             }
