@@ -26,12 +26,17 @@
         }
     };
 
+    var clientPlugins = [];
+
     var loadPlugin = function (pluginName, emitter, modelContainer) {
         var plugin = require('./plugins/' + pluginName);
         loadPluginEvents(plugin, emitter);
         loadPluginModels(plugin, modelContainer);
         if (plugin.hasFiles) {
             app.use(express.static(__dirname + '/plugins/' + pluginName + '/public'));
+        }
+        if (plugin.hasScript) {
+            clientPlugins.push(pluginName);
         }
     };
 
@@ -112,7 +117,7 @@
     var startPlugins = function (next) {
         // Load plugins
         // TODO Cy - Declencher l'event plugin loaded ou un truc du genre
-        //loadPlugin('demo', emitter, modelList);
+        loadPlugin('demo', emitter, modelList);
         loadPlugin('farmer', emitter, modelList);
         next();
     };
@@ -131,25 +136,33 @@
 
         // Listen and setup events for a new connection
         channel.on('connection', function (socket) {
-            socket.session = {};
-            console.log('New player: ' + socket.id);
-            emitter.emit('app.connection', {
-                'session': socket.session,
-                'socket': socket
+            socket.session = {};    // TODO Cy - Initialiser la session correctement...
+
+            socket.emit('command', {
+                'type': 'plugin.load',
+                'data': clientPlugins
             });
 
-            // Send all models to the newly connected player
-            // TODO Cy - Dans l'ideal, il ne faut pas envoyer tous les models, seulement ceux qui sont necessaires (geographiquement proches, etc...)
-            for (var key in modelList) {
-                modelList[key].find({}, function (err, objects) {
-                    if (objects[0]) {
-                        console.log('Sending models: ' + objects[0].constructor.modelName);
-                        objects.forEach(function (object) {
-                            sendObject(socket, object);
-                        });
-                    }
+            socket.on('app.join', function () {
+                console.log('New player: ' + socket.id);
+                emitter.emit('app.connection', {
+                    'session': socket.session,
+                    'socket': socket
                 });
-            }
+
+                // Send all models to the newly connected player
+                // TODO Cy - Dans l'ideal, il ne faut pas envoyer tous les models, seulement ceux qui sont necessaires (geographiquement proches, etc...)
+                for (var key in modelList) {
+                    modelList[key].find({}, function (err, objects) {
+                        if (objects[0]) {
+                            console.log('Sending models: ' + objects[0].constructor.modelName);
+                            objects.forEach(function (object) {
+                                sendObject(socket, object);
+                            });
+                        }
+                    });
+                }
+            });
 
             socket.on('update', function (event) {
                 var model = getModelByName(event.name);

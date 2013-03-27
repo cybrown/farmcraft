@@ -8,6 +8,8 @@
 
     plugin.hasFiles = true;
 
+    plugin.hasScript = true;
+
     plugin.events = {
         'app.connection': function (event) {
             console.log('[FARMER] detection de la connection d\'un nouveau joueur !');

@@ -19,6 +19,9 @@ Il fourni aussi un model.
     // On indique que le plugin propose un repertoire pour des fichiers statiques
     plugin.hasFiles = true;
 
+    // On indique que le plugin a un script a execute par le client
+    plugin.hasScript = true;
+
     // On definit les actions qui auront lieu sur les evenements
     // C'est un objet dont les cles sont les noms des evenements.
     // Si il faut definir plusieurs evenements par nom, on peut mettre un tableau de fonctions

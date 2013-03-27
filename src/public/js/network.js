@@ -32,5 +32,9 @@ define(['networkemitter'], function (nemitter) {
         this.socket.emit(type, data);
     };
 
+    Network.prototype.join = function () {
+        this.socket.emit('app.join');
+    };
+
     return Network;
 });
