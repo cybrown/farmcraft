@@ -12,6 +12,8 @@ define([], function () {
         this.y = 0;
     };
 
+    Animal.prototype.modelName = 'Farmer';
+
     Animal.prototype.init = function () {
 
         return this;    // Toujours retourner this a la place de ne rien retourner, pour pouvoir chainer les appels
