@@ -229,4 +229,7 @@
         startTask(t);
     }
 
+    emitter.emit('app.start');
+
 }());
+
