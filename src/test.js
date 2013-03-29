@@ -9,7 +9,7 @@
     var Chunk = require('./plugins/board/models/chunk');
 
     var c = Chunk.create({
-        mapx: 1,
+        mapx: 0,
         mapy: 0,
         tiles: [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
