@@ -11,13 +11,13 @@
     plugin.hasScript = false;
 
     plugin.events = {
-        'app.start': function () {
+        'app.start': function (event) {
             console.log('[GAME] Start');
-            emitter.emit('game.start');
+            emitter.emit('game.start', event);
         },
         'app.stop': function () {
             console.log('[GAME] Stop');
-            emitter.emit('game.stop');
+            emitter.emit('game.stop', event);
         }
     };
 

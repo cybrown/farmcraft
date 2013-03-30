@@ -6,7 +6,9 @@
     "use strict";
     var express = require('express'),
         app = express(),
-        server = require('http').createServer(app);
+        server = require('http').createServer(app),
+        TaskManager = require('./asynctasks').TaskManager,
+        Task = require('./asynctasks').Task;
 
     var loadPluginEvents = function (plugin, emitter) {
         for (var ev in plugin.events) {
@@ -70,11 +72,7 @@
         return modelList[name] || null;
     };
 
-
-
-
-
-    var startExpress = function (next) {
+    var startExpress = function (callback) {
         var fs = require('fs');
 
         app.set('port', process.env.PORT || 3000);
@@ -104,17 +102,20 @@
                 }
             });
         });
+
+
+        callback();
     };
 
-    var startMongoose = function (next) {
+    var startMongoose = function (callback) {
         var mongoose = require('mongoose');
         mongoose.connect('mongodb://localhost/farmcraftdb', function (err) {
-            if (err) { throw err; }
-            next();
+            if (err) { callback(err); }
+            callback();
         });
     };
 
-    var startPlugins = function (next) {
+    var startPlugins = function (callback) {
         var fs = require('fs');
         // TODO Cy - Declencher l'event plugin loaded ou un truc du genre
         // TODO Utiliser la methode asynchrone et utiliser next()
@@ -124,10 +125,10 @@
                 loadPlugin(pluginName, emitter, modelList);
             }
         });
-        next();
+        callback();
     };
 
-    var startChannel = function (next) {
+    var startChannel = function (callback) {
         // Create comminucation channel for this game
         var channel = require('socket.io').listen(server);
 
@@ -188,46 +189,24 @@
                 console.log('Player disconnected: ' + socket.id);
             });
         });
-        next();
+        callback();
     };
 
-    var startListener = function (next) {
+    var startListener = function (callback) {
         server.listen(app.get('port'), function () {
             console.log("Server listening on port " + app.get('port'));
-            next();
+            callback();
         });
     };
 
-    var Task = function (run, deps) {
-        this.run = run;
-        this.deps = deps || [];
-        this.started = false;
-    };
+    var tm = new TaskManager();
+    tm.add(new Task('listener', ['express', 'channel', 'plugins', 'mongoose'], startListener));
+    tm.add(new Task('express', [], startExpress));
+    tm.add(new Task('mongoose', ['plugins'], startMongoose));
+    tm.add(new Task('plugins', [], startPlugins));
+    tm.add(new Task('channel', ['plugins'], startChannel));
 
-    var tasks = {
-        'listener': new Task(startListener, ['express', 'channel', 'plugins']),
-        'express': new Task(startExpress),
-        'mongoose': new Task(startMongoose),
-        'plugins': new Task(startPlugins, ['mongoose']),
-        'channel': new Task(startChannel, ['plugins'])
-    };
-
-    var startTask = function (taskName) {
-        var task = tasks[taskName];
-        if (task.started) {
-            return;
-        }
-        console.log('Starting Task: ' + taskName);
-        task.started = true;
-        for (var t in task.deps) {
-            startTask(task.deps[t]);
-        }
-        task.run(function () {});
-    };
-
-    for (var t in tasks) {
-        startTask(t);
-    }
+    tm.start();
 
     emitter.emit('app.start');
 
