@@ -10,6 +10,12 @@
         TaskManager = require('./asynctasks').TaskManager,
         Task = require('./asynctasks').Task;
 
+    // Hack pour express, pour utiliser plusieurs racines dans la recherche de templates
+    require('./hack_express_multiple_roots');
+
+    // Set base view folder
+    app.set('views', [__dirname + '/views']);
+
     var loadPluginEvents = function (plugin, emitter) {
         for (var ev in plugin.events) {
             if (typeof plugin.events[ev] === 'function') {
@@ -39,6 +45,16 @@
         }
         if (plugin.hasScript) {
             clientPlugins.push(pluginName);
+        }
+        if (plugin.hasViews) {
+            app.get('views').push(__dirname + '/plugins/' + pluginName + '/views');
+        }
+        if (plugin.hasControllers) {
+            for (var route in plugin.controllers) {
+                if (plugin.controllers.hasOwnProperty(route)) {
+                    app.get(route, plugin.controllers[route]);
+                }
+            }
         }
     };
 
@@ -157,7 +173,8 @@
                 });
 
                 // Send all models to the newly connected player
-                // TODO Cy - Dans l'ideal, il ne faut pas envoyer tous les models, seulement ceux qui sont necessaires (geographiquement proches, etc...)
+                // TODO Cy - Dans l'ideal, il ne faut pas envoyer tous les models, seulement ceux qui sont necessaires
+                //      (geographiquement proches, etc...)
                 for (var key in modelList) {
                     modelList[key].find({}, function (err, objects) {
                         if (objects[0]) {
