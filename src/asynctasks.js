@@ -1,7 +1,9 @@
 /*global require, module, console*/
 (function () {
     "use strict";
-    var async = require('async'),
+    var util = require('util'),
+        events = require('events'),
+        async = require('async'),
         TaskManager = function () {
             this.tasks = {};
             this.nameOrder = [];
@@ -21,6 +23,8 @@
             }.bind(this);
             this.started = false;
         };
+
+    TaskManager.prototype = new events.EventEmitter();
 
     TaskManager.prototype.add = function (task) {
         this.tasks[task.name] = task;
@@ -56,6 +60,9 @@
 
     TaskManager.prototype.start = function () {
         this.computeRunOrder();
+        this.runOrder.push(function () {
+            this.emit('finished');
+        }.bind(this));
         async.series(this.runOrder);
     };
 

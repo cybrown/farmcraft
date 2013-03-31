@@ -56,6 +56,8 @@
                 }
             }
         }
+        emitter.emit('app.plugin.loaded');
+        emitter.emit('app.plugin.' + pluginName + '.loaded');
     };
 
     // TODO Cy - Cette fonction doit etre ranger quelque part
@@ -218,14 +220,14 @@
 
     var tm = new TaskManager();
     tm.add(new Task('listener', ['express', 'channel', 'plugins', 'mongoose'], startListener));
-    tm.add(new Task('express', [], startExpress));
+    tm.add(new Task('express', ['plugins'], startExpress));
     tm.add(new Task('mongoose', ['plugins'], startMongoose));
     tm.add(new Task('plugins', [], startPlugins));
     tm.add(new Task('channel', ['plugins'], startChannel));
 
     tm.start();
-
-    emitter.emit('app.start');
+    tm.on('finished', function () {
+        emitter.emit('app.start');
+    });
 
 }());
-
