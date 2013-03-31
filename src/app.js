@@ -11,7 +11,7 @@
         Task = require('./asynctasks').Task;
 
     // Hack pour express, pour utiliser plusieurs racines dans la recherche de templates
-    require('./hack_express_multiple_roots');
+    require('./hack_express_jade_multiple_roots');
 
     // Set base view folder
     app.set('views', [__dirname + '/views']);
