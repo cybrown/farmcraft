@@ -11,7 +11,7 @@
     plugin.hasScript = true;
 
     plugin.events = {
-        'game.connection': function (event) {
+        'game.join': function (event) {
             console.log('[FARMER] detection de la connection d\'un nouveau joueur !');
             // Create farmer for the incoming player
             setTimeout(function () {
@@ -25,7 +25,7 @@
                 });
             }, 1000);
         },
-        'game.disconnect': function (event) {
+        'game.leave': function (event) {
             console.log('[FARMER] Un joueur est maintenant deconnecte !');
             if (event.session.hasOwnProperty('farmer')) {
 

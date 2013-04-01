@@ -21,11 +21,11 @@
         },
         'app.connection': function (event) {
             console.log('[GAME] Client connected');
-            emitter.emit('game.connection', event);
+            emitter.emit('game.join', event);
         },
         'app.disconnect': function (event) {
             console.log('[GAME] Client disconnected');
-            emitter.emit('game.disconnect', event);
+            emitter.emit('game.leave', event);
         }
     };
 

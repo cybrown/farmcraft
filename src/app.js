@@ -8,7 +8,8 @@
         app = express(),
         server = require('http').createServer(app),
         TaskManager = require('./asynctasks').TaskManager,
-        Task = require('./asynctasks').Task;
+        Task = require('./asynctasks').Task,
+        io = require('socket.io');
 
     // Hack pour express, pour utiliser plusieurs racines dans la recherche de templates
     require('./hack_express_jade_multiple_roots');
@@ -148,7 +149,8 @@
 
     var startChannel = function (callback) {
         // Create comminucation channel for this game
-        var channel = require('socket.io').listen(server);
+        var channel = io.listen(server);
+        channel.set('log level', 2);
 
         // TODO Cy - il faut refactoriser ces bouts de code pour generalier a tous les models...
         emitter.on('model.change', function (model) {
