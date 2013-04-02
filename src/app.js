@@ -11,6 +11,8 @@
         Task = require('./asynctasks').Task,
         io = require('socket.io');
 
+    // TODO a mettre dans une tache
+    app.use(express.bodyParser());
     // Hack pour express, pour utiliser plusieurs racines dans la recherche de templates
     require('./hack_express_jade_multiple_roots');
 
