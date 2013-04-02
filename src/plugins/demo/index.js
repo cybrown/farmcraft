@@ -53,6 +53,23 @@ Il fourni aussi un model.
         }
     };
 
+    // Pour les controlleurs, on definit un tableau de routes, avec les actions pour chaques methodes.
+    // les methodes sont get, post, put, delete et all.
+    // la route est dans la cle 'route'
+    plugin.controllers = [
+        {
+            'route': '/demo',
+            'get': function (req, res) {
+                // On utilise un template fourni par ce plugin, dans le dossier views
+                res.render('demo');
+            },
+            'post': function (req, res) {
+                // On utilise un template fourni par ce plugin, dans le dossier views
+                res.render('demopost');
+            }
+        }
+    ];
+
     // On exporte notre plug in
     module.exports = plugin;
 }());

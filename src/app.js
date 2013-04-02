@@ -18,27 +18,40 @@
     app.set('views', [__dirname + '/views']);
 
     var loadPluginEvents = function (plugin, emitter) {
-        for (var ev in plugin.events) {
-            if (typeof plugin.events[ev] === 'function') {
-                emitter.on(ev, plugin.events[ev]);
-            } else {
-                for (var f in plugin.events[ev]) {
-                    emitter.on(ev, plugin.events[ev][f]);
+        var
+            ev,
+            f;
+        for (ev in plugin.events) {
+            if (plugin.events.hasOwnProperty(ev)) {
+                if (typeof plugin.events[ev] === 'function') {
+                    emitter.on(ev, plugin.events[ev]);
+                } else {
+                    for (f in plugin.events[ev]) {
+                        if (plugin.events[ev].hasOwnProperty(f)) {
+                            emitter.on(ev, plugin.events[ev][f]);
+                        }
+                    }
                 }
             }
         }
     };
 
     var loadPluginModels = function (plugin, modelContainer) {
-        for (var model in plugin.models) {
+        var model;
+        for (model in plugin.models) {
             modelContainer[model] = plugin.models[model];
         }
     };
 
     var clientPlugins = [];
 
+    var HTTP_VERBS = ['all', 'get', 'post', 'put', 'delete'];
     var loadPlugin = function (pluginName, emitter, modelContainer) {
-        var plugin = require(__dirname + '/plugins/' + pluginName);
+        var
+            plugin = require(__dirname + '/plugins/' + pluginName),
+            i = 0,
+            max = 0,
+            verb;
         loadPluginEvents(plugin, emitter);
         loadPluginModels(plugin, modelContainer);
         if (plugin.hasFiles) {
@@ -51,9 +64,12 @@
             app.get('views').push(__dirname + '/plugins/' + pluginName + '/views');
         }
         if (plugin.hasControllers) {
-            for (var route in plugin.controllers) {
-                if (plugin.controllers.hasOwnProperty(route)) {
-                    app.get(route, plugin.controllers[route]);
+            for (i = 0, max = plugin.controllers.length; i < max; i += 1) {
+                for (verb in HTTP_VERBS) {
+                    verb = HTTP_VERBS[verb];
+                    if (plugin.controllers[i].hasOwnProperty(verb)) {
+                        app[verb](plugin.controllers[i].route, plugin.controllers[i][verb]);
+                    }
                 }
             }
         }
