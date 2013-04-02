@@ -1,11 +1,13 @@
 define(function () {
+    'use strict';
+
     var Tilemap = function () {
         this.x = 0;
         this.y = 0;
         this.chunks = [];
     };
 
-    Tilemap.prototype.init = function() {
+    Tilemap.prototype.init = function () {
 
         return this;
     };

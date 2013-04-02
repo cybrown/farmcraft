@@ -1,5 +1,5 @@
 /*global define, console */
-define(['world/tilemap', 'world/chunk', 'guiemitter', 'collection'], function (Tilemap, Chunk, emitter, Collection) {
+define(['world/tilemap', 'guiemitter', 'collection'], function (Tilemap, emitter, Collection) {
     'use strict';
 
     var World = function () {
@@ -16,11 +16,15 @@ define(['world/tilemap', 'world/chunk', 'guiemitter', 'collection'], function (T
     };
 
     World.prototype.initTilemap = function () {
-        var tilemap = (new Tilemap()).init(),
-            chunk = (new Chunk()).init();
-        tilemap.addChunk(chunk, 0, 0);
-        emitter.emit('tilemap.set', tilemap);
+        this.tilemap = (new Tilemap()).init();
+        //    chunk = (new Chunk()).init();
+        //tilemap.addChunk(chunk, 0, 0);
+        emitter.emit('tilemap.set', this.tilemap);
         return this;
+    };
+
+    World.prototype.addChunk = function (chunk) {
+        this.tilemap.addChunk(chunk);
     };
 
     return World;

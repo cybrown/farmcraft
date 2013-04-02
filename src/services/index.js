@@ -21,9 +21,12 @@
 
     Service.prototype.get = function () {
         if (this.share === true) {
-            return this.value();
+            if (this.cache === null) {
+                this.cache = this.value()
+            }
+            return this.cache;
         }
-        return this.cache === null ? this.cache = this.value() : this.cache;
+        return this.cache === null ? this.value() : this.cache;
     };
 
 

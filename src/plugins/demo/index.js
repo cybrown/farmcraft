@@ -1,3 +1,4 @@
+/*global require, console, module */
 // Fichier d'exemple pour un plug in
 
 /*
@@ -12,12 +13,20 @@ Il fourni aussi un model.
     'use strict';
 
     // On importe la classe qui represente un plugin
-    var Plugin = require('./../../plugin');
-
-    var plugin = new Plugin();
+    var Plugin = require('./../../plugin'),
+        plugin = new Plugin();
 
     // On indique que le plugin propose un repertoire pour des fichiers statiques
     plugin.hasFiles = true;
+
+    // On indique que le plugin a un script a execute par le client
+    plugin.hasScript = true;
+
+    // On indique que le plugin a des controllers supplementaires
+    plugin.hasControllers = true;
+
+    // En plus d'avoir des routes, le plugin a des vues jade qui sont dans le dossier views
+    plugin.hasViews = true;
 
     // On definit les actions qui auront lieu sur les evenements
     // C'est un objet dont les cles sont les noms des evenements.
@@ -34,6 +43,14 @@ Il fourni aussi un model.
     // On ajoute les models a notre plugin
     plugin.models = {
         'Animal': require('./models/animal')
+    };
+
+    // On ajoute les nouveaux controlleurs
+    plugin.controllers = {
+        '/demo': function (req, res) {
+            // On utilise un template fourni par ce plugin, dans le dossier views
+            res.render('demo');
+        }
     };
 
     // On exporte notre plug in
