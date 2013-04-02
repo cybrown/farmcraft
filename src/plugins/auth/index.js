@@ -1,4 +1,4 @@
-
+/*jslint node: true*/
 (function () {
     'use strict';
 
@@ -7,28 +7,26 @@
 
     plugin.hasFiles = true;
 
-    plugin.hasScript = true;
+    plugin.hasScript = false;
 
     plugin.hasControllers = true;
 
     plugin.hasViews = true;
 
-    plugin.events = {
-        'app.connection': function (event) {
-            console.log('[DEMO] detection de la connection d\'un nouveau joueur !');
-        },
-        'app.disconnect': function (event) {
-            console.log('[DEMO] Un joueur est maintenant deconnecte !');
-        }
-    };
+    var Totoup = require('./../../totouserprovider');
+    var t = new Totoup();
 
-    plugin.models = {};
-
-    plugin.controllers = {
-        '/login': function (req, res) {
-            res.render('login.jade');
+    plugin.controllers = [
+        {
+            'route': '/login',
+            'get': function (req, res) {
+                res.render('login.jade');
+            },
+            'post': function (req, res) {
+                res.send(t.authenticate(req.body.login, req.body.password));
+            }
         }
-    };
+    ];
 
     module.exports = plugin;
 }());
