@@ -17,11 +17,11 @@
 
     var TotoUserProvider = function () {};
 
-    TotoUserProvider.prototype.authenticate = function (login, pass) {
-        if (login == "toto" && pass =="toto") {
-            return true;
+    TotoUserProvider.prototype.authenticate = function (login, pass, callback) {
+        if (login === "toto" && pass === "toto") {
+            callback(null, true);
         } else {
-            return false;
+            callback(null, false);
         }
     };
 

@@ -25,6 +25,15 @@
             'post': function (req, res) {
                 res.send(t.authenticate(req.body.login, req.body.password));
             }
+        },
+        {
+            'route': '/register',
+            'get': function (req, res) {
+                res.render('register.jade');
+            },
+            'post': function (req, res) {
+                res.send('POST regiter');
+            }
         }
     ];
 
