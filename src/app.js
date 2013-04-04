@@ -9,13 +9,16 @@
         server = require('http').createServer(app),
         TaskManager = require('./asynctasks').TaskManager,
         Task = require('./asynctasks').Task,
-        io = require('socket.io');
+        io = require('socket.io'),
+        services = require('./globalServices.js');
 
-    // TODO a mettre dans une tache
-    app.use(express.bodyParser());
     // Hack pour express, pour utiliser plusieurs racines dans la recherche de templates
     require('./hack_express_jade_multiple_roots');
 
+    // TODO a mettre dans une tache
+    app.use(express.cookieParser('test'));
+    app.use(express.bodyParser());
+    app.use(express.cookieSession());
     // Set base view folder
     app.set('views', [__dirname + '/views']);
 
@@ -54,6 +57,7 @@
             i = 0,
             max = 0,
             verb;
+
         loadPluginEvents(plugin, emitter);
         loadPluginModels(plugin, modelContainer);
         if (plugin.hasFiles) {
@@ -75,6 +79,24 @@
                 }
             }
         }
+        if (plugin.hasServices) {
+            // TODO Faire un systeme de gestion des services par plugin pour eviter les collisions
+            for (i = 0, max = plugin.services.length; i < max; i += 1) {
+                switch (plugin.services[i].type) {
+                case 'share':
+                    services.share(plugin.services[i].name, plugin.services[i].service);
+                    break;
+                case 'protect':
+                    services.protect(plugin.services[i].name, plugin.services[i].service);
+                    break;
+                case 'get':
+                default:
+                    services.set(plugin.services[i].name, plugin.services[i].service);
+                    break;
+                }
+            }
+        }
+        plugin.s = services;
         emitter.emit('app.plugin.loaded');
         emitter.emit('app.plugin.' + pluginName + '.loaded');
     };

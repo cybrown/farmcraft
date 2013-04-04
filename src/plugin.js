@@ -13,6 +13,7 @@
         this.hasControllers = false;
         this.hasViews = false;
         this.deps = [];
+        this.services = null;
     };
 
     module.exports = Plugin;

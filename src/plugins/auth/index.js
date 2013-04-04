@@ -2,19 +2,14 @@
 (function () {
     'use strict';
 
-    var Plugin = require('./../../plugin'),
+    var
+        Plugin = require('./../../plugin'),
         plugin = new Plugin();
 
     plugin.hasFiles = true;
-
     plugin.hasScript = false;
-
     plugin.hasControllers = true;
-
     plugin.hasViews = true;
-
-    var Totoup = require('./../../totouserprovider');
-    var t = new Totoup();
 
     plugin.controllers = [
         {
@@ -23,7 +18,20 @@
                 res.render('login.jade');
             },
             'post': function (req, res) {
-                res.send(t.authenticate(req.body.login, req.body.password));
+                plugin.s.get('userprovider').authenticate(req.body.login, req.body.password, function (err, user) {
+                    if (err) {  // TODO Page 500 sur les exceptions ?
+                        throw err;
+                    }
+                    req.session.user = user;
+                    res.send(user);
+                });
+            }
+        },
+        {
+            'route': '/logout',
+            'get': function (req, res) {
+                req.session = null;
+                res.send('LOGOUT');
             }
         },
         {
@@ -32,7 +40,16 @@
                 res.render('register.jade');
             },
             'post': function (req, res) {
-                res.send('POST regiter');
+                plugin.s.get('userprovider').register(req.body.login, req.body.password, function (err, user) {
+                    if (err) {
+                        throw err;
+                    }
+                    if (user === null) {
+                        res.send(false);
+                    } else {
+                        res.send(true);
+                    }
+                });
             }
         }
     ];

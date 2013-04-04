@@ -1,20 +1,29 @@
-// Plugin pour le user
+/*jslint node: true*/
 (function () {
     'use strict';
 
-    var Plugin = require('./../../plugin');
-
-    var plugin = new Plugin();
+    var
+        Plugin = require('./../../plugin'),
+        plugin = new Plugin(),
+        MongooseUserProvider = require('./services/mongooseuserprovider');
 
     plugin.hasFiles = true;
-
-    plugin.events = {
-
-    };
 
     plugin.models = {
         'User': require('./models/user')
     };
 
+    plugin.hasServices = true;
+    plugin.services = [
+        {
+            'name': 'userprovider',
+            'type': 'share',
+            'service': function () {
+                return new MongooseUserProvider();
+            }
+        }
+    ];
+
     module.exports = plugin;
 }());
+
